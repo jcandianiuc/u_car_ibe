@@ -405,7 +405,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return;
     }
 
-    /*public void loginExitoso(){
+    /*public void loginExitoso(){re
         return;
     }*/
 

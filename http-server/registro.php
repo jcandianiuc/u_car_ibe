@@ -1,4 +1,5 @@
 <?php
+
 function conectar(){
 	//Variables para la base de datos
 	$host = "localhost";

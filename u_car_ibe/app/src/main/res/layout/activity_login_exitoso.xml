@@ -5,5 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginExitoso">
+    <TextView
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Por favor elige una opción"
+        android:textAlignment="center"
+        android:textSize="20dp"/>
+
+    <Button
+        android:id="@+id/conductor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Conductor"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/pasajero"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="50dp"
+         />
+
+    <Button
+        android:id="@+id/pasajero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pasajero"
+        app:layout_constraintLeft_toLeftOf="@id/conductor"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="50dp"/>
 
 </android.support.constraint.ConstraintLayout>

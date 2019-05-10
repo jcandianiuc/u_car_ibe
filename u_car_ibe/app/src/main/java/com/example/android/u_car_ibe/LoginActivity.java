@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -63,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         sesion = new Sesiones(this); //Una sesion, donde tengo guardadas las sharedPreferences, como el usuario y contraseña.
         if (sesion.obtenerUsuario().equals("") && sesion.obtenerContraseña().equals("")) {//Si no se ha iniciado sesión
             setContentView(R.layout.activity_login);
@@ -405,7 +407,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return;
     }
 
-    /*public void loginExitoso(){re
+    /*public void loginExitoso(){
         return;
     }*/
 

@@ -14,4 +14,22 @@ return [
 			return Project\UserController::handleRequest($request);
 		},
 	],
+	[
+		'handles'	=> function(Request $request)
+		{
+			return in_array(
+				$request->getPath(),
+				[
+					"trip/start",
+					"trip/proposal",
+					"trip/accept",
+					"trip/reject",
+				]
+			);
+		},
+		'handle'	=> function(Request $request)
+		{
+			return Project\TripController::handleRequest($request);
+		},
+	]
 ];

@@ -16,7 +16,7 @@ class Http
 	protected	$galletas;
 	protected	$headers;
 
-	public function __construct(string $body)
+	public function __construct(string $body="")
 	{
 		$this->setBody($body);
 		$this->headers	= array();

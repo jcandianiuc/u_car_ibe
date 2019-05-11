@@ -2,21 +2,35 @@
 
 namespace Project\Models;
 
-use Core\Database;
+use Core\DbModel;
 
-class User
+class User extends DbModel
 {
-	static public function hashPassword(string $raw_password)
+	const	TABLE	= "user";
+
+	protected	$password;
+	protected	$token;
+	public		$id;
+	public		$name;
+	public		$phone;
+	public		$verified	= false;
+
+	static public function passwordHashing(string $raw_password)
 	{
 		return md5($raw_password);
 	}
 
-	static public function fetchWithIdAndPassword(string $id,string $raw_password)
+	static public function tokenHashing(User $user)
 	{
-		$password	= self::hashPassword($raw_password);
-		$sql		= "SELECT * FROM user WHERE id=:id AND password=:password";
+		return md5("${$user->id}:${$user->password}");
+	}
 
-		$results	= Database::instance()->query($sql,compact("id","password"));
-		return empty($results)?null:new self($results[0]);
+	public function getToken(){ return $this->token; }
+
+	public function save()
+	{
+		if (empty($this->token))
+			$this->token	= self::tokenHashing($this);
+		parent::save();
 	}
 }

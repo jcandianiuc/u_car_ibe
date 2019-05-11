@@ -21,7 +21,7 @@ class Database
 	{
 		$paramsString	= implode(";",array_map(function(string $key,string $value)
 		{
-			return "${key}=${value}}";
+			return "${key}=${value}";
 		},array_keys($params),array_values($params)));
 		return empty($paramsString)?$driver:"${driver}:${paramsString}";
 	}

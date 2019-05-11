@@ -8,7 +8,8 @@ class Controller
 {
 	static public function handleRequest(Request $request)
 	{
-		$target	= end($request->getPathParts());
+		$path	= $request->getPathParts();
+		$target	= end($path);
 		$suffix	= ucfirst($target);
 		$method	= "handle${suffix}";
 

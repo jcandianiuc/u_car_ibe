@@ -6,6 +6,7 @@ use Core\Controller;
 use Core\Request;
 use Core\Response;
 use Core\HttpException\BadRequestException;
+use Core\HttpException\UnauthorizedException;
 use Project\Models\User;
 
 class UserController extends Controller
@@ -15,14 +16,18 @@ class UserController extends Controller
 
 	static public function handleLogin(Request $request)
 	{
-		if (!isset($request->data["id"],$request->data["password"]))
+		if (!isset($request->data->id,$request->data->password))
 			throw new BadRequestException("invalid-form");
 
-		$user	= User::fetchWithIdAndPassword($request->data["id"],$request->data["password"]);
+		$users	= User::queryAllMatchingParams([
+			'id'		=> $request->data->id,
+			'password'	=> User::passwordHashing($request->data->password),
+		]);
 
-		if (empty($user))
+		if (empty($users))
 			throw new BadRequestException("wrong-credentials",self::MSG_ERR_WRONG_CREDENTIALS);
 		else {
+			$user	= $users[0];
 			if (!$user->verified)
 				throw new UnauthorizedException("pending-email-verification",self::MSG_ERR_NOT_VERIFIED);
 

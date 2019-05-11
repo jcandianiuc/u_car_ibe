@@ -2,7 +2,7 @@ START TRANSACTION;
 
 CREATE TABLE `user` (
 	`id`		int(11) UNSIGNED NOT NULL,
-	`password`	varchar(32) NOT NULL,
+	`password`	char(32) NOT NULL,
 	`phone`		varchar(14) NOT NULL,
 	`name`		varchar(50) NOT NULL,
 	`token`		char(32) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE `trip` (
 	`id`		int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`user_id`	int(5) UNSIGNED NOT NULL,
 	`datetime`	datetime(6) NOT NULL,
-	`role`		varchar(20) NOT NULL,
+	`role`		tinyint UNSIGNED NOT NULL,
 	`to_uni`	boolean NOT NULL,
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`user_id`) REFERENCES `user`(`id`)

@@ -11,7 +11,7 @@ class Trip extends DbModel
 	const	TABLE	= "trip";
 
 	const	FILLABLE_FIELD_NAMES	= ["id","markers"];
-	const	REQUIRED_FIELD_NAMES	= ["datetime","markers","role","user_id",];
+	const	REQUIRED_FIELD_NAMES	= ["datetime","markers","user_id",];
 	
 	const	DATETIME_FORMAT	= "Y-m-d H:i:s";
 	const	ROLES			= ["driver","passenger"];
@@ -29,12 +29,12 @@ class Trip extends DbModel
 	const	MSG_ERR_PASSENGER_MARKERS_COUNT	=
 				"Un pasajero sólo puede especificar un marcador.";
 
-	private	$markers	= array();
-	private	$id;
-	public	$datetime;
-	public	$role;
-	public	$to_uni;
-	public	$user_id;
+	private		$markers	= array();
+	private		$id;
+	protected	$role;
+	public		$datetime;
+	public		$to_uni;
+	public		$user_id;
 
 	private function updateMarkers()
 	{
@@ -59,6 +59,18 @@ class Trip extends DbModel
 	{
 		$this->markers	= array_map(["Project\Models\Marker","normalization"],$markers);
 		$this->updateMarkers();
+	}
+
+	public function getRole(){ return array_key_exists($this->role,self::ROLES)?self::ROLES[$this->role]:"?"; }
+	public function setRole($role)
+	{
+		if (is_numeric($role))
+			$this->role	= $role;
+		else if (is_string($role)) {
+			$roleCode	= array_search($role,self::ROLES);
+			$this->role	= $roleCode===false?-1:$roleCode;
+		} else
+			throw new Exception("wrong-type");
 	}
 
 	public function fetchUser():User{ return empty($this->user_id)?null:User::queryWithId($this->user_id); }
@@ -109,7 +121,9 @@ class Trip extends DbModel
 				$errors[]	= ['code'=>"date-expired",'message'=>self::MSG_ERR_DATE_EXPIRED,'data'=>"datetime"];
 		}
 
-		if (!empty($this->role)&&!in_array($this->role,self::ROLES))
+		if (!isset($this->role))
+			$errors[]	= ['code'=>"required",'message'=>self::MSG_ERR_FIELD_REQUIRED,'data'=>"role"];
+		else if ($this->role<0||$this->role>=count(self::ROLES))
 			$errors[]	= ['code'=>"invalid",'message'=>self::MSG_ERR_INVALID_ROLE,'data'=>"role"];
 
 		if (!empty($this->role)&&!empty($this->markers))

@@ -6,6 +6,7 @@ use Core\Controller;
 use Core\Request;
 use Core\Response;
 use Core\HttpException\BadRequestException;
+use Core\HttpException\MethodNotAllowedException;
 use Core\HttpException\UnauthorizedException;
 use Project\Models\User;
 
@@ -16,6 +17,9 @@ class UserController extends Controller
 
 	static public function handleLogin(Request $request)
 	{
+		if ($request->method!="POST")
+			throw new MethodNotAllowedException();
+
 		if (!isset($request->data->id,$request->data->password))
 			throw new BadRequestException("invalid-form");
 

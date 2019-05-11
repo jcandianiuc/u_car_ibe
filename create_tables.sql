@@ -13,9 +13,9 @@ CREATE TABLE `user` (
 CREATE TABLE `trip` (
 	`id`		int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`user_id`	int(5) UNSIGNED NOT NULL,
-	`role`		varchar(20) NOT NULL,
 	`datetime`	datetime(6) NOT NULL,
-	`direction`	varchar(40) NOT NULL,
+	`role`		varchar(20) NOT NULL,
+	`to_uni`	boolean NOT NULL,
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`user_id`) REFERENCES `user`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

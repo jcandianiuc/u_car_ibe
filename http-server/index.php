@@ -11,4 +11,4 @@
 require "core.php";
 
 use Core\uCARibe;
-uCARibe::app(include "config.php")->run(["Project\RequestHandler"]);
+uCARibe::app(include "config.php")->run();

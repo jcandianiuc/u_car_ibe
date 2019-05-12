@@ -14,6 +14,8 @@ class UserController extends Controller
 {
 	const	MSG_ERR_NOT_VERIFIED		= "Para iniciar sesión, es necesario verificar el correo electrónico institucional.";
 	const	MSG_ERR_WRONG_CREDENTIALS	= "La cuenta no existe, o la contraseña es incorrecta.";
+	const MSG_ERR_REGISTRED_USER  = "El usuario ya esta registrado"
+	const MSG_ERR_ERROR_FOUND = "Encontramos Errores c:"
 
 	static public function handleLogin(Request $request)
 	{
@@ -38,6 +40,42 @@ class UserController extends Controller
 			$response	= new Response();
 			$response->setJson($user->token);
 			return $response;
+		}
+	}
+
+	static public function handleRegistration(Request $request)
+	{
+		if ($request->method!="POST")
+			throw new MethodNotAllowedException();
+
+		$users = User::queryAllMatchingParams([ # Buscar si hay algun registro con el mismo id
+			'id'		=> $request->data->id;
+		])
+
+		if (!empty($users)) # Si no esta vacio, quiere decir que hay un usuario ya registrado con ese id
+			throw new BadRequestException("already-registered",self::MSG_ERR_REGISTRED_USER); # Se manda un mensaje de error
+		else { # Si esta vacio, se puede realizar el registro
+
+			$user = new User # Creamos un nuevo usuario
+
+			# Guardamos los datos del nuevo usuario
+			$user->id = $request->data->id;
+			$user->password = $request->data->password;
+			$user->name = $request->data->name;
+			$user->phone = $request->data->phone;
+
+			$errors = $user->validation(); # Verificar que no haya errores
+
+			if(empty($errors)){ # Si no hay errores
+				# Insertar los datos en la BD
+				$user->save();
+
+				$response	= new Response();
+				return $response; # No necesitamos regresar nada
+			}
+			else{
+				throw new BadRequestException("ERROR-FOUND",self::MSG_ERR_ERROR_FOUND); # Se manda un mensaje de error
+			} 
 		}
 	}
 }

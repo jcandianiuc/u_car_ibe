@@ -116,7 +116,7 @@ class Trip extends DbModel
 			// var_dump($routedriver);
 			$sql	= "SELECT * FROM `marker` WHERE `trip_id`=:trip_id LIMIT 1";
 			$routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id)));
-			var_dump($routedriver);
+
 
 			if (empty($routedriver))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);

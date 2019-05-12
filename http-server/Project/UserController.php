@@ -12,10 +12,10 @@ use Project\Models\User;
 
 class UserController extends Controller
 {
-	const	MSG_ERR_NOT_VERIFIED		= "Para iniciar sesión, es necesario verificar el correo electrónico institucional.";
-	const	MSG_ERR_WRONG_CREDENTIALS	= "La cuenta no existe, o la contraseña es incorrecta.";
-	const MSG_ERR_REGISTRED_USER  = "El usuario ya esta registrado"
-	const MSG_ERR_ERROR_FOUND = "Encontramos Errores c:"
+	const	MSG_ERR_INVALID_REGISTRATION	= "Los datos de registro son inválidos.";
+	const	MSG_ERR_NOT_VERIFIED			= "Para iniciar sesión, es necesario verificar el correo electrónico institucional.";
+	const	MSG_ERR_REGISTRED_USER			= "La matrícula especificada ya ha sido registrada.";
+	const	MSG_ERR_WRONG_CREDENTIALS		= "La cuenta no existe, o la contraseña es incorrecta.";
 
 	static public function handleLogin(Request $request)
 	{
@@ -49,18 +49,18 @@ class UserController extends Controller
 			throw new MethodNotAllowedException();
 
 		$users = User::queryAllMatchingParams([ # Buscar si hay algun registro con el mismo id
-			'id'		=> $request->data->id;
+			'id'		=> $request->data->id,
 		])
 
 		if (!empty($users)) # Si no esta vacio, quiere decir que hay un usuario ya registrado con ese id
 			throw new BadRequestException("already-registered",self::MSG_ERR_REGISTRED_USER); # Se manda un mensaje de error
 		else { # Si esta vacio, se puede realizar el registro
 
-			$user = new User # Creamos un nuevo usuario
+			$user = new User(); # Creamos un nuevo usuario
 
 			# Guardamos los datos del nuevo usuario
 			$user->id = $request->data->id;
-			$user->password = $request->data->password;
+			$user->password =  User::passwordHashing($request->data->password);
 			$user->name = $request->data->name;
 			$user->phone = $request->data->phone;
 
@@ -74,7 +74,7 @@ class UserController extends Controller
 				return $response; # No necesitamos regresar nada
 			}
 			else{
-				throw new BadRequestException("ERROR-FOUND",self::MSG_ERR_ERROR_FOUND); # Se manda un mensaje de error
+				throw new BadRequestException("invalid-form",self::MSG_ERR_INVALID_REGISTRATION,$errors);
 			} 
 		}
 	}

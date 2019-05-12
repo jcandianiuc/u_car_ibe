@@ -105,10 +105,14 @@ class Trip extends DbModel
 	{
 		if ($this->role == "driver") {
 			#Consulta obtener la ruta del conductor $this->id
-			$routedriver	= Marker::queryAllMatchingParamsInnerJoin([
-			'marker.trip_id'		=> $this->id,
-			'trip.role'		=> 0,
-			], "trip");
+			// $routedriver	= Marker::queryAllMatchingParamsInnerJoin([
+			// 'marker.trip_id'		=> $this->id,
+			// 'trip.role'		=> 0,
+			// ], "trip");
+			$trip_id = $this->id;
+			$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `marker.trip_id`=:trip_id";
+			$routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,compact("trip_id")));
+			
 
 			if (empty($routedriver))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);

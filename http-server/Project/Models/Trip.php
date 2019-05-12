@@ -112,7 +112,7 @@ class Trip extends DbModel
 			$trip_id = $this->id;
 			$role= 0;
 			$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `marker`.`trip_id`=:trip_id AND `trip`.`role`=:role AND `trip`.`id`=:trip_id";
-			$routedriver	= array_map(["Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
+			$routedriver	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
 
 			print_r ($routedriver);
@@ -128,7 +128,7 @@ class Trip extends DbModel
 				$role= 1;
 				$datetime1= $this->datetime;
 				$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id`";
-				$markerpasseger	= array_map(["Marker","normalization"],Database::instance()->query($sql,array(':role' => $role , ':datetime1' => $datetime1)));
+				$markerpasseger	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':role' => $role , ':datetime1' => $datetime1)));
 
 				print_r ($markerpasseger);
 				if (empty($markerpasseger))

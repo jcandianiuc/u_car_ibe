@@ -29,17 +29,13 @@ public class Sesiones {
         sesion.edit().putBoolean("ruta", confirm).apply();
     }
 
-   /* public void guardarCorreo(String correo){
-        sesion.edit().putString("correo", correo).apply();
-    }
+   public void guardarToken(String token){
+        sesion.edit().putString("token", token).apply();
+   }
 
-    public String obtenerLat(){
-        return sesion.getString("latitud", "");
-    }
-
-    public String obtenerLong(){
-        return sesion.getString("longitud", "");
-    }*/
+   public String obtenerToken(){
+        return sesion.getString("token", "");
+   }
 
     public String obtenerUsuario(){
         return sesion.getString("usuario", "");

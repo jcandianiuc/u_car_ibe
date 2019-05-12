@@ -333,7 +333,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         byte[] query = input.getBytes("utf-8");
                         os.write(query, 0, query.length);
                     }
-                    
+
                     is = httpConn.getInputStream(); //Se obtiene el resultado
                     result = convertStreamToString(is);//Se convierte a String*/
 
@@ -349,6 +349,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 } else {
                     sesion.guardarUsuario(mUsername);
                     sesion.guardarContraseña(mPassword);
+                    sesion.guardarToken(result);
                     return true;
                 }
             } else {
@@ -364,7 +365,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 loginExitoso();
-                //finish();
+
             } else {
                 mPasswordView.setError("Usuario o contraseña incorrectos");
                 mPasswordView.requestFocus();

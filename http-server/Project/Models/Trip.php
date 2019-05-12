@@ -121,20 +121,53 @@ class Trip extends DbModel
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
 				#Consulta para obtener marcadores de pasajeros
-				// $markerpasseger	= Marker::queryAllMatchingParamsInnerJoin([
+				// $markerpassenger	= Marker::queryAllMatchingParamsInnerJoin([
 				// 'trip.role'		=> 1,
 				// ], "trip");
-				$trip_id = $this->id;
-				$role= 1;
-				$datetime1= $this->datetime;
-				$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni";
-				$markerpasseger	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':role' => $role , ':datetime1' => $datetime1, ':to_uni' => $this->to_uni)));
+				// $trip_id = $this->id;
+				// $role= 1;
+				// $datetime1= $this->datetime;
+				$sql	= <<<ENDOFQUERY
+					SELECT	`proposal`.`id`					AS `trip_id`,
+							`marker`.`latitude`				AS `latitude`,
+							`marker`.`longitude`			AS `longitude`,
+							`proposed`.`driver_status`,
+							`proposed`.`passenger_status`
 
-				print_r ($markerpasseger);
-				if (empty($markerpasseger))
+						FROM	`trip`				AS `proposal`
+							LEFT JOIN	`match`		AS `proposed`
+								ON	(`proposal`.`role`=0
+										AND `proposal`.`id`=`proposed`.`driver_trip_id`
+										AND `proposed`.`passenger_trip_id`=:trip_id
+									)
+									OR	(`proposal`.`id`=`proposed`.`passenger_trip_id`
+											AND `proposed`.`driver_trip_id`=:trip_id)
+
+							JOIN		`marker`
+								ON	`proposal`.`id`=`marker`.`trip_id`
+
+						WHERE	`proposal`.`role`!=:role
+								AND	`proposal`.`to_uni`=:to_uni
+								AND (`proposed`.`driver_trip_id` IS NULL
+										OR	(`proposed`.`driver_status`!=2 AND `proposed`.`passenger_status`!=2)
+								)
+								AND ABS(TIMESTAMPDIFF(MINUTE,`proposal`.`datetime`,:datetime))<=30
+ENDOFQUERY;
+				//"SELECT * FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni";
+				$markerpassenger	= array_map(
+					["Project\Models\Marker","normalization"],
+					Database::instance()->query($sql,array(
+						':trip_id'	=> $this->id,
+						':datetime'	=> $this->datetime,
+						':role'		=> $this->role,
+						':to_uni'	=> $this->to_uni,
+				)));
+
+				print_r ($markerpassenger);
+				if (empty($markerpassenger))
 					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 				else {
-					foreach($markerpasseger as $marker){
+					foreach($markerpassenger as $marker){
 						echo $this->testMatch($marker, $routedriver ,200)?"yes":"no";
 
 					}

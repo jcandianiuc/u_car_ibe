@@ -47,7 +47,7 @@ class uCARibe
 
 	public function logRequest()
 	{
-		$file	= fopen($config['request-log'],"a");
+		$file	= fopen($this->config['request-log'],"a");
 		fwrite($file,time().PHP_EOL);
 		fwrite($file,print_r($this->request->headers,true).PHP_EOL);
 		fwrite($file,$this->request->body.PHP_EOL);

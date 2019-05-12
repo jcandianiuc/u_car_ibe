@@ -111,13 +111,13 @@ class Trip extends DbModel
 			// ], "trip");
 			$trip_id = $this->id;
 			$role= 0;
-			// $sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `marker.trip_id`=:trip_id AND `trip.role`=:role";
-			// $routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
-			// var_dump($routedriver);
-			$sql	= "SELECT * FROM `marker` WHERE `trip_id`=:trip_id LIMIT 1";
-			$routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id)));
+			$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `marker.trip_id`=:trip_id AND `trip.role`=:role";
+			$routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
+			// $sql	= "SELECT * FROM `marker` WHERE `trip_id`=:trip_id LIMIT 1";
+			// $routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id)));
 
+			print_r ($routedriver);
 			if (empty($routedriver))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {

@@ -27,6 +27,9 @@ class uCARibe
 		$this->config	= $config;
 		$this->autoloaderRegistration();
 		$this->request	= new Request($this->pathResolution());
+
+		if (!empty($config['request-log']))
+			$this->logRequest();
 	}
 
 	public function autoloaderRegistration()
@@ -40,6 +43,16 @@ class uCARibe
 			if (is_file($path))
 				include $path;
 		});
+	}
+
+	public function logRequest()
+	{
+		$file	= fopen($config['request-log'],"a");
+		fwrite($file,time().PHP_EOL);
+		fwrite($file,print_r($this->request->headers,true).PHP_EOL);
+		fwrite($file,$this->request->body.PHP_EOL);
+		fwrite($file,"-------------------------".PHP_EOL);
+		fclose($file);
 	}
 
 	public function pathResolution():string

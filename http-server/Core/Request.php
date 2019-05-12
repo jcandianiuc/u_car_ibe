@@ -20,7 +20,8 @@ class Request extends Http
 		if ($this->method=="GET")
 			return $_GET;
 		else {
-			$content_type	= $this->getHeaders()['Content-Type'];
+			$headers		= $this->getHeaders();
+			$content_type	= array_key_exists("Content-Type",$headers)?$headers['Content-Type']:null;
 			if ($content_type=="application/json")
 				return json_decode($this->getBody());
 			else

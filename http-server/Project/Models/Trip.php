@@ -127,8 +127,8 @@ class Trip extends DbModel
 				$trip_id = $this->id;
 				$role= 1;
 				$datetime1= $this->datetime;
-				$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `marker`.`trip_id` =  `trip`.`id`";
-				$markerpasseger	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':role' => $role)));
+				$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id`";
+				$markerpasseger	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':role' => $role , ':datetime1' => $datetime1)));
 
 				print_r ($markerpasseger);
 				if (empty($markerpasseger))

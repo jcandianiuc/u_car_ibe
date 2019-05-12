@@ -61,7 +61,7 @@ class DbModel extends Model
 		},array_keys($params)));
 		if (!empty($where_sql))
 			$sql	.= " WHERE ${where_sql}";
-		return array_map([get_called_class(),"normalize"],Database::instance()->query($sql,$params));
+		return array_map([get_called_class(),"normalization"],Database::instance()->query($sql,$params));
 	}
 
 	static public function queryWithId(int $id)
@@ -69,7 +69,7 @@ class DbModel extends Model
 		$table	= static::TABLE;
 		$sql	= "SELECT * FROM `${table}` WHERE `id`=:id LIMIT 1";
 
-		$results	= array_map([get_called_class(),"normalize"],Database::instance()->query($sql,compact("id")));
+		$results	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,compact("id")));
 		return empty($results)?null:current($results);
 	}
 

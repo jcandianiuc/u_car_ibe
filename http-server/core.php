@@ -6,6 +6,8 @@ use Core\HttpException;
 use Core\HttpException\NotFoundException;
 use Core\HttpException\ServerErrorException;
 
+use Exception;
+
 class uCARibe
 {
 	static private $app;
@@ -70,7 +72,7 @@ class uCARibe
 		} catch (HttpException $e) {
 			$e->send();
 		} catch (Exception $e) {
-			error_log($e->getMsg());
+			error_log($e->getMessage());
 			(new ServerErrorException)->send();
 		}
 	}

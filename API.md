@@ -73,12 +73,16 @@ con un enlace funcional al endpoint `[GET] /verification`.
 |-----------|---------------|---------------|---------------|
 | Si		| `id`			| `string`		| Matrícula de estudiante. |
 | Si		| `password`	| `string`		| Contraseña para esta cuenta en uCARibe. |
+| Si		| `name`		| `string`		| Nombre de estudiante. |
+| Si		| `phone`		| `string`		| Número de teléfono del estudiante. |
 
 Ejemplo
 ```json
 {
-	"id"		: "170300002",
-	"password"	: "ucaribe"
+	"id"		: "160300122",
+	"password"	: "ucaribe",
+	"name"		: "Cesar Cruz Muñoz",
+	"phone"		: "9982003302"
 }
 ```
 
@@ -135,7 +139,7 @@ Valida credencial de estudiante y provee un token de autenticación para otras s
 Ejemplo
 ```json
 {
-	"id"		: "170300002",
+	"id"		: "160300116",
 	"password"	: "ucaribe"
 }
 ```
@@ -411,6 +415,88 @@ Ejemplo
 	{
 		"id"		: 44,
 		"status"	: "rejected",
+	}
+}
+```
+
+### `[POST] /trip/reject`
+
+Rechaza la propuesta especificada para un viaje especificado.
+
+#### Recibe
+
+| Requisito	| Parámetro		| Tipo de dato	| Descripción	|
+|-----------|---------------|---------------|---------------|
+| Si		| `trip_id`		| `int`			| `id` del viaje a rechazar. |
+| Si		| `proposal_id`	| `int`			| `id` de la propuesta a rechazar. |
+
+Ejemplo  
+```json
+{
+	"trip_id"		: 2,
+	"proposal_id"	: 45
+}
+```
+
+#### Respuestas
+
+- <span style="color:green">**[200]: Rechazada**</span>
+
+Se rechazó la propuesta para el usuario actual.
+
+Si el servidor encuentra una nueva propuesta, la misma se incluye en la respuesta.
+De lo contrario, la respuesta es `null`.
+
+**Contenido: `proposal-dict`|null**
+```json
+{
+	"id"		: 46,
+	"status"	: "pending",
+	"markers"	:
+	[
+		{
+			"latitude"	: 10.17,
+			"longitude"	: 13.55
+		}
+	],
+	"contact"	: null
+}
+```
+
+- <span style="color:darkred">**[404]: No encontrada**</span>
+
+La propuesta o viaje especificado no existe.
+
+**Código de error:** `"not-found"`
+
+- <span style="color:darkred">**[409]: Previamente aceptada**</span>
+
+La propuesta especificada ya había sido aceptada por todos los participantes.
+
+**Código de error:** `"previously-accepted"`  
+**Contenido de error: `proposal-dict`**
+
+Ejemplo
+```json
+{
+	"code"		: "cannot-update",
+	"message"	: "La propuesta especificada ya había sido aceptada por todos los participantes.",
+	"data"		:
+	{
+		"id"		: 46,
+		"status"	: "accepted",
+		"markers"	:
+		[
+			{
+				"latitude"	: 10.17,
+				"longitude"	: 13.55
+			}
+		],
+		"contact"	: {
+			"name"	: "Marcos Alejandro Perez",
+			"email"	: "160300154@ucaribe.edu.mx",
+			"phone"	: "9981053651"
+		}
 	}
 }
 ```

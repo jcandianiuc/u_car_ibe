@@ -111,9 +111,8 @@ class Trip extends DbModel
 			// ], "trip");
 			$trip_id = $this->id;
 			$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `marker.trip_id`=:trip_id";
-			$routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,compact("trip_id")));
+			$routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id));
 			var_dump($routedriver);
-			die();
 
 			if (empty($routedriver))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);

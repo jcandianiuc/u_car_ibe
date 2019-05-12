@@ -4,6 +4,8 @@ namespace Core;
 
 use Core\Request;
 
+use Exception;
+
 class Controller
 {
 	static public function handleRequest(Request $request)

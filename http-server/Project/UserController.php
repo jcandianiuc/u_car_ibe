@@ -16,11 +16,19 @@ class UserController extends Controller
 	const	MSG_ERR_NOT_VERIFIED			= "Para iniciar sesión, es necesario verificar el correo electrónico institucional.";
 	const	MSG_ERR_REGISTRED_USER			= "La matrícula especificada ya ha sido registrada.";
 	const	MSG_ERR_WRONG_CREDENTIALS		= "La cuenta no existe, o la contraseña es incorrecta.";
+	const	MSG_ERR_WRONG_CTYPE				= "El contenido de la petición debe ser tipo 'application/json'.";
+
+	static public function jsonRequestTest(Request $request)
+	{
+		return !empty($request->headers["Content-Type"])&&$request->headers["Content-Type"]=="application/json";
+	}
 
 	static public function handleLogin(Request $request)
 	{
 		if ($request->method!="POST")
 			throw new MethodNotAllowedException();
+		if (!self::jsonRequestTest($request))
+			throw new BadRequestException("invalid-content-type",self::MSG_ERR_WRONG_CTYPE);
 
 		if (!isset($request->data->id,$request->data->password))
 			throw new BadRequestException("invalid-form");
@@ -47,6 +55,8 @@ class UserController extends Controller
 	{
 		if ($request->method!="POST")
 			throw new MethodNotAllowedException();
+		if (!self::jsonRequestTest($request))
+			throw new BadRequestException("invalid-content-type",self::MSG_ERR_WRONG_CTYPE);
 
 		$users = User::queryAllMatchingParams([ # Buscar si hay algun registro con el mismo id
 			'id'		=> $request->data->id,

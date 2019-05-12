@@ -14,8 +14,14 @@ use Project\Models\Trip;
 class TripController extends Controller
 {
 	const	MSG_ERR_WRONG_AUTH	= "La información de autenticación es incorrecta.";
+	const	MSG_ERR_WRONG_CTYPE	= "El contenido de la petición debe ser tipo 'application/json'.";
 
 	static private $user;
+
+	static public function jsonRequestTest(Request $request)
+	{
+		return !empty($request->headers["Content-Type"])&&$request->headers["Content-Type"]=="application/json";
+	}
 
 	/*	Esta función precede a todas las peticiones que se manejan con este controller,
 		y verifica que la petición esté autenticada.
@@ -24,6 +30,9 @@ class TripController extends Controller
 	*/
 	static public function handleRequest(Request $request)
 	{
+		if (!self::jsonRequestTest($request))
+			throw new BadRequestException("invalid-content-type",self::MSG_ERR_WRONG_CTYPE);
+
 		$auth_header	= empty($request->headers['Authorization'])?null:$request->headers['Authorization'];
 		$auth_token		= empty($auth_header)?null:substr($auth_header,6);
 		$user			= self::$user = empty($auth_token)?null:User::queryWithToken($auth_token);

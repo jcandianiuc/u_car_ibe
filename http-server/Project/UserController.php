@@ -50,7 +50,7 @@ class UserController extends Controller
 
 		$users = User::queryAllMatchingParams([ # Buscar si hay algun registro con el mismo id
 			'id'		=> $request->data->id,
-		])
+		]);
 
 		if (!empty($users)) # Si no esta vacio, quiere decir que hay un usuario ya registrado con ese id
 			throw new BadRequestException("already-registered",self::MSG_ERR_REGISTRED_USER); # Se manda un mensaje de error

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Sesiones {
     private SharedPreferences sesion;
     public Sesiones(Context context){
@@ -23,20 +25,24 @@ public class Sesiones {
         sesion.edit().putString("contraseña", password).apply();
     }
 
-    public void guardarCorreo(String correo){
-        sesion.edit().putString("correo", correo).apply();
+    public void ConfirmarRuta(Boolean confirm){
+        sesion.edit().putBoolean("ruta", confirm).apply();
     }
 
-    public String obtenerLat(){
-        return sesion.getString("latitud", "");
-    }
+   public void guardarToken(String token){
+        sesion.edit().putString("token", token).apply();
+   }
 
-    public String obtenerLong(){
-        return sesion.getString("longitud", "");
-    }
+   public String obtenerToken(){
+        return sesion.getString("token", "");
+   }
 
     public String obtenerUsuario(){
         return sesion.getString("usuario", "");
+    }
+
+    public Boolean obtenerConfirmRuta(){
+        return sesion.getBoolean("ruta", false);
     }
 
     public String obtenerContraseña(){

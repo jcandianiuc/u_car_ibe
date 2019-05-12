@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -72,6 +73,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             populateAutoComplete();
 
             mPasswordView = (EditText) findViewById(R.id.password);
+
             mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -307,6 +309,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mPassword = password;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected Boolean doInBackground(Void... params) {
 
@@ -315,25 +318,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 try {
                     // Simulate network access.
                     //Hago la conexión
-                    URL url = new URL("https://ampr1.000webhostapp.com/login.php");
+                    URL url = new URL("http://187.153.22.193/login");
                     HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();//Se realiza la conexión
 
                     httpConn.setRequestMethod("POST");
-                    Uri.Builder builder = new Uri.Builder()//query
-                            .appendQueryParameter("usuario", mUsername)
-                            .appendQueryParameter("contraseña", mPassword);
-                    String query = builder.build().getEncodedQuery();
+                    httpConn.setRequestProperty("Content-Type", "application/json");
+                    httpConn.setRequestProperty("Accept", "application/json");
+                    httpConn.setDoOutput(true);
+
+                    String input= "{\"id\":\"" + mUsername +"\"," + "\"password\":\"" + mPassword + "\"}";
+
                     httpConn.connect();
-                    OutputStream os = httpConn.getOutputStream();
-                    BufferedWriter writer = new BufferedWriter(
-                            new OutputStreamWriter(os, "UTF-8"));
-                    writer.write(query);
-                    writer.flush();
-                    writer.close();
-                    os.close();
+                    try(OutputStream os = httpConn.getOutputStream()) {
+                        byte[] query = input.getBytes("utf-8");
+                        os.write(query, 0, query.length);
+                    }
 
                     is = httpConn.getInputStream(); //Se obtiene el resultado
-                    result = convertStreamToString(is);//Se convierte a String
+                    result = convertStreamToString(is);//Se convierte a String*/
 
                 } catch (Exception e) {
                     result = "No";
@@ -347,6 +349,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 } else {
                     sesion.guardarUsuario(mUsername);
                     sesion.guardarContraseña(mPassword);
+                    sesion.guardarToken(result);
                     return true;
                 }
             } else {
@@ -362,7 +365,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 loginExitoso();
-                //finish();
+
             } else {
                 mPasswordView.setError("Usuario o contraseña incorrectos");
                 mPasswordView.requestFocus();

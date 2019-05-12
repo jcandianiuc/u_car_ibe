@@ -1,6 +1,7 @@
 package com.example.android.u_car_ibe;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,8 +47,9 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
-    //LocationRequest locationRequest;
+    LatLng[] coord;
     Location mLastLocation;
+    private Sesiones sesion;
     LatLng Ucaribe= new LatLng(21.2013714,-86.8239155);
     private ArrayList<LatLng> arrayCoord = new ArrayList<LatLng>();
 
@@ -54,6 +57,8 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sesion = new Sesiones(this);
+        sesion.verificarConn(false);
         setContentView(R.layout.activity_guardar_ruta_cond);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -68,11 +73,12 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
                 .enableAutoManage(this, this)
                 .build();
 
-        Button confirm = (Button) findViewById(R.id.confirmar);
+        final Button confirm = (Button) findViewById(R.id.confirmar);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Poly();
+                Confirm();
                 //String url= getMapsApiDirectionsUrl();
                 //List<LatLng> poly= decodePoly(url);
             }
@@ -189,20 +195,43 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
 
         //LatLng coordenadas= new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         arrayCoord.add(Ucaribe);
-        LatLng[] coord= arrayCoord.toArray(new LatLng[arrayCoord.size()]);
+        coord= arrayCoord.toArray(new LatLng[arrayCoord.size()]);
 
         Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
                 .clickable(true)
                 .add(
-
                         coord));
-
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(coordenadas));
+    }
 
-    // Position the map's camera near Alice Springs in the center of Australia,
-    // and set the zoom factor so most of Australia shows on the screen.
-        // mMap.moveCamera(CameraUpdateFactory.newLatLng(mylatlng));
-        //mMap.moveCamera(CameraUpdateFactory.new LatLng(-23.684, 133.903), 4));
+    public void Confirm(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Confirmar ruta");
+        builder.setMessage("¿Estás seguro?");
+        builder.setPositiveButton("Confirmar",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sesion.ConfirmarRuta(true);
+                        ActivConductor();
+
+
+                    }
+                });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void ActivConductor(){
+        Intent ruta= new Intent(this, Conductor.class);
+        startActivity(ruta);
     }
 
     public void onBackPressed(){

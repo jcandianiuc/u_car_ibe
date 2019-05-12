@@ -18,8 +18,11 @@ public class Conductor extends AppCompatActivity {
         sesion.verificarConn(false);
 
         //Checar si tiene ruta guardada
-        GuardarRuta();
-        Toast.makeText(this, "Por favor ingresa tu ruta a través de marcadores", Toast.LENGTH_LONG ).show();
+        /*if (sesion.obtenerConfirmRuta() == false) {
+            GuardarRuta();
+            Toast.makeText(this, "Por favor ingresa tu ruta a través de marcadores", Toast.LENGTH_LONG ).show();
+        }*/
+
 
 
     }

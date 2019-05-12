@@ -17,8 +17,8 @@ public class Pasajero extends AppCompatActivity {
 
         //Revisar si tiene coordenada guardada
 
-        GuardarRuta();
-        Toast.makeText(this, "Por favor ingresa un marcador", Toast.LENGTH_LONG ).show();
+        /*GuardarRuta();
+        Toast.makeText(this, "Por favor ingresa un marcador", Toast.LENGTH_LONG ).show();*/
     }
 
     public void GuardarRuta(){

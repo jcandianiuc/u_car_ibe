@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class LoginExitoso extends AppCompatActivity {
     private Sesiones sesion;
@@ -37,14 +38,16 @@ public class LoginExitoso extends AppCompatActivity {
     }
 
     public void ElegirConductor(){
-        Intent conductor= new Intent(this, Conductor.class);
+        Intent conductor= new Intent(this, GuardarRutaCond.class);
         startActivity(conductor);
+        Toast.makeText(this, "Por favor ingresa tu ruta a través de marcadores", Toast.LENGTH_LONG ).show();
 
     }
 
     public void ElegirPasajero(){
-        Intent pasajero = new Intent(this, Pasajero.class);
+        Intent pasajero = new Intent(this, GuardarCoordPass.class);
         startActivity(pasajero);
+        Toast.makeText(this, "Por favor ingresa un marcador", Toast.LENGTH_LONG ).show();
     }
 
     public void cerrarSesionIntent(){

@@ -33,7 +33,11 @@
             android:value="AIzaSyB8mEl8WVtpedU-8R6xTKjn4wix84UlQmY" />
 
         <activity android:name=".Registro" />
-        <activity android:name=".LoginExitoso"></activity>
+        <activity android:name=".LoginExitoso" />
+        <activity android:name=".Conductor" />
+        <activity android:name=".GuardarRutaCond" />
+        <activity android:name=".Pasajero" />
+        <activity android:name=".GuardarCoordPass"></activity>
     </application>
 
 </manifest>

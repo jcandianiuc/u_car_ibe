@@ -33,8 +33,9 @@
 
             <ImageView
                 android:src="@drawable/logo"
-                android:layout_width="match_parent"
-                android:layout_height="250dp" />
+                android:layout_width="250dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"/>
 
 
             <LinearLayout
@@ -42,6 +43,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+                
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/user"
+                    android:layout_gravity="center"/>
 
 
 
@@ -51,22 +58,32 @@
 
                     <AutoCompleteTextView
                         android:id="@+id/user1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Usuario"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:hint="Matrícula"
                         android:inputType="text"
                         android:maxLines="1"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:layout_gravity="center"/>
 
                 </android.support.design.widget.TextInputLayout>
 
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/padlock"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"/>
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+
                     <EditText
                         android:id="@+id/password"
-                        android:layout_width="match_parent"
+                        android:layout_width="250dp"
+                        android:layout_gravity="center"
                         android:layout_height="wrap_content"
                         android:hint="Contraseña"
                         android:imeActionId="6"

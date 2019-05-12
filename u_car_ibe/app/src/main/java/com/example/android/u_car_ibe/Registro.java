@@ -68,23 +68,26 @@ public class Registro extends AppCompatActivity implements LoaderCallbacks<Curso
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
+    private AutoCompleteTextView mEmailView; //Id
+    private EditText mPasswordView; //Contraseña
+    private EditText mPhoneView; //Teléfono
     private View mProgressView;
     private View mLoginFormView;
-    private EditText mUserView;
+    private EditText mUserView; //Nombre
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.id);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        mUserView= (EditText) findViewById(R.id.user);
+        mUserView= (EditText) findViewById(R.id.nombre);
+
+        mPhoneView= (EditText) findViewById(R.id.phone);
         //populateAutoComplete();
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -168,11 +171,13 @@ public class Registro extends AppCompatActivity implements LoaderCallbacks<Curso
         mEmailView.setError(null);
         mPasswordView.setError(null);
         mUserView.setError(null);
+        mPhoneView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
         String user= mUserView.getText().toString();
+        String phone= mPhoneView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -189,11 +194,11 @@ public class Registro extends AppCompatActivity implements LoaderCallbacks<Curso
             mEmailView.setError("No puede ser vacío");
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
+        } /*else if (!isEmailValid(email)) {
             mEmailView.setError("Correo no válido");
             focusView = mEmailView;
             cancel = true;
-        }
+        }*/
 
         //Check username
 
@@ -201,11 +206,11 @@ public class Registro extends AppCompatActivity implements LoaderCallbacks<Curso
             mUserView.setError("No puede ser vacío");
             focusView= mUserView;
             cancel= true;
-        } else if(!isUsernameValid(user)){
+        } /*else if(!isUsernameValid(user)){
             mUserView.setError("Usuario no válido");
             focusView= mUserView;
             cancel= true;
-        }
+        }*/
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -214,7 +219,7 @@ public class Registro extends AppCompatActivity implements LoaderCallbacks<Curso
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, user);
+            mAuthTask = new UserLoginTask(email, password, user, phone);
             mAuthTask.execute((Void) null);
         }
     }
@@ -330,31 +335,46 @@ public class Registro extends AppCompatActivity implements LoaderCallbacks<Curso
         private final String mEmail;
         private final String mPassword;
         private final String mUser;
+        private final String mPhone;
 
-        UserLoginTask(String email, String password, String user) {
+        UserLoginTask(String email, String password, String user, String phone) {
             mEmail = email;
             mPassword = password;
             mUser= user;
+            mPhone= phone;
         }
 
+        @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
         protected Boolean doInBackground(Void... params) {
             String result;
             InputStream is;
             try {
-                URL url = new URL("https://ampr1.000webhostapp.com/registro.php");
-                //URL url = new URL("https://ampr1.000webhostapp.com/localizacion.php");
+                URL url = new URL("http://187.153.22.193/registration");
                 HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();//Se realiza la conexión
 
 
                 httpConn.setRequestMethod("POST");
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("correo", mEmail)
-                        .appendQueryParameter("usuario", mUser)
-                        .appendQueryParameter("contraseña", mPassword)
+                /*Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("id", mEmail)
+                        .appendQueryParameter("password", mPassword)
+                        .appendQueryParameter("name", mUser)
+                        .appendQueryParameter("phone", mPhone)
                         ;
-                String query = builder.build().getEncodedQuery();
+                String query = builder.build().getEncodedQuery();*/
+                httpConn.setRequestProperty("Content-Type", "application/json");
+                httpConn.setRequestProperty("Accept", "application/json");
+                httpConn.setDoOutput(true);
+
+                String input= "{\"id\":\"" + mEmail +"\"," + "\"password\":\"" + mPassword + "\", \"name\":\"" + mUser+ "\", \"phone\":\""+ mPhone + "\"}";
+
                 httpConn.connect();
+                try(OutputStream os = httpConn.getOutputStream()) {
+                    byte[] query = input.getBytes("utf-8");
+                    os.write(query, 0, query.length);
+                }
+
+/*
                 OutputStream os = httpConn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
@@ -363,23 +383,28 @@ public class Registro extends AppCompatActivity implements LoaderCallbacks<Curso
                 writer.close();
                 os.close();
 
-                //jsonData= os;
+                //jsonData= os;*/
 
-                is = httpConn.getInputStream(); //Se obtiene el resultado
-                result = convertStreamToString(is);//Se convierte a String
+                //is = httpConn.getInputStream(); //Se obtiene el resultado
+                //result = convertStreamToString(is);//Se convierte a String
+                int code= httpConn.getResponseCode();
+                if (code != 200){
+                    return false;
+                }
 
             } catch (Exception e) {
                 result = "No";
                 e.printStackTrace();
             }
 
-            String comprobar= "No";
+            /*String comprobar= "No";
             if (comprobar.equals(result)){
                 return false;
             }
             else {
                 return true;
-            }
+            }*/
+            return true;
         }
 
         private String convertStreamToString(InputStream is) throws IOException { //Para convertir a String

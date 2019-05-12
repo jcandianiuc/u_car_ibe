@@ -178,11 +178,23 @@ ENDOFQUERY;
 		}
 		else{
 			#Consulta para obtener marcador del pasajero $this->id
+			$trip_id = $this->id;
+			$role= 1;
+			$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `marker`.`trip_id`=:trip_id AND `trip`.`role`=:role AND `trip`.`id`=:trip_id";
+			$markerpassenger	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
 
-			#Consulta obtener las rutas de los conductores 
+			print_r ($markerpassenger);
+			print_r ("=========");
+			if (empty($markerpassenger))
+				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
+			else {
+				#Consulta obtener las rutas de los conductores 
+
+			}
 
 
+			
 		}
 
 		return null;

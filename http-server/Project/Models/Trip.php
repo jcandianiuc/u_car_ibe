@@ -116,6 +116,7 @@ class Trip extends DbModel
 
 
 			print_r ($routedriver);
+			print_r ("=========");
 			if (empty($routedriver))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {

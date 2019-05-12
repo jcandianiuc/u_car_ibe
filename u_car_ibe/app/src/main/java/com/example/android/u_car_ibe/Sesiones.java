@@ -21,6 +21,10 @@ public class Sesiones {
         sesion.edit().putString("longitud", longitud).apply();
     }
 
+    public void guardarToUni(Boolean toUni){
+        sesion.edit().putBoolean("toUni", toUni).apply();
+    }
+
     public void guardarContraseña(String password){
         sesion.edit().putString("contraseña", password).apply();
     }
@@ -35,6 +39,10 @@ public class Sesiones {
 
    public String obtenerToken(){
         return sesion.getString("token", "");
+   }
+
+   public Boolean obtenerToUni(){
+        return sesion.getBoolean("toUni", true);
    }
 
     public String obtenerUsuario(){

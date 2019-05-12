@@ -6,6 +6,8 @@ use Core\HttpException;
 use Core\HttpException\NotFoundException;
 use Core\HttpException\ServerErrorException;
 
+use Exception;
+
 class uCARibe
 {
 	static private $app;

@@ -191,7 +191,7 @@ ENDOFQUERY;
 			else {
 				#Consulta obtener las rutas de los conductores 
 				$role= 0;
-				$sql	= "SELECT `trip_id` FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni GROUP BY `trip_id`"
+				$sql	= "SELECT `trip_id` FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni GROUP BY `trip_id`";
 
 				$tripidroute	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':role' => $role, ':datetime1' => $this->datetime, ':to_uni' => $this->to_uni)));
 

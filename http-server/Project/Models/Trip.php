@@ -92,7 +92,7 @@ class Trip extends DbModel
 
 	public function testMatch($marcador, $ruta , $distancemin){
 	  foreach($ruta as $coord){
-	    $dist= circleDistance($marcador["latitude"], $marcador["longitude"], $coord["latitude"], $coord["longitude"]);
+	    $dist= circleDistance($marcador->latitude, $marcador->longitude, $coord->latitude, $coord->longitude);
 	    if ($dist <= $distancemin) {
 	      return TRUE;
 	    }
@@ -135,7 +135,8 @@ class Trip extends DbModel
 					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 				else {
 					foreach($markerpasseger as $marker){
-						var_dump(testMatch($marker, $routedriver ,200));
+						echo testMatch($marker, $routedriver ,200)?"yes":"no";
+
 					}
 
 

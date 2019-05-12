@@ -72,7 +72,7 @@ class uCARibe
 		} catch (HttpException $e) {
 			$e->send();
 		} catch (Exception $e) {
-			error_log($e->getMsg());
+			error_log($e->getMessage());
 			(new ServerErrorException)->send();
 		}
 	}

@@ -64,7 +64,7 @@ class DbModel extends Model
 		return array_map([get_called_class(),"normalization"],Database::instance()->query($sql,$params));
 	}
 
-	static public function queryAllMatchingParamsInnerJoin(array $params, array $tableinner)
+	static public function queryAllMatchingParamsInnerJoin(array $params,string $tableinner)
 	{
 		$table	= static::TABLE;
 		$sql	= "SELECT * FROM `${table}` INNER JOIN `${tableinner}`";

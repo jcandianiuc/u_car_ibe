@@ -64,6 +64,21 @@ class DbModel extends Model
 		return array_map([get_called_class(),"normalization"],Database::instance()->query($sql,$params));
 	}
 
+	static public function queryAllMatchingParamsInnerJoin(array $params, array $tableinner)
+	{
+		$table	= static::TABLE;
+		$sql	= "SELECT * FROM `${table}` INNER JOIN `${tableinner}`";
+
+		$where_sql	= implode(" AND ",array_map(function($fieldName)
+		{
+			return "`${fieldName}`=:${fieldName}";
+		},array_keys($params)));
+		if (!empty($where_sql))
+			$sql	.= " ON ${where_sql}";
+		
+		return array_map([get_called_class(),"normalize"],Database::instance()->query($sql,$params));
+	}
+
 	static public function queryWithId(int $id)
 	{
 		$table	= static::TABLE;

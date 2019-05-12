@@ -56,7 +56,7 @@ class UserController extends Controller
 			throw new BadRequestException("already-registered",self::MSG_ERR_REGISTRED_USER); # Se manda un mensaje de error
 		else { # Si esta vacio, se puede realizar el registro
 
-			$user = new User # Creamos un nuevo usuario
+			$user = new User(); # Creamos un nuevo usuario
 
 			# Guardamos los datos del nuevo usuario
 			$user->id = $request->data->id;

@@ -61,6 +61,21 @@ class DbModel extends Model
 		},array_keys($params)));
 		if (!empty($where_sql))
 			$sql	.= " WHERE ${where_sql}";
+		return array_map([get_called_class(),"normalization"],Database::instance()->query($sql,$params));
+	}
+
+	static public function queryAllMatchingParamsInnerJoin(array $params,string $tableinner)
+	{
+		$table	= static::TABLE;
+		$sql	= "SELECT * FROM `${table}` INNER JOIN `${tableinner}`";
+
+		$where_sql	= implode(" AND ",array_map(function($fieldName)
+		{
+			return "`${fieldName}`=:${fieldName}";
+		},array_keys($params)));
+		if (!empty($where_sql))
+			$sql	.= " ON ${where_sql}";
+		
 		return array_map([get_called_class(),"normalize"],Database::instance()->query($sql,$params));
 	}
 
@@ -69,7 +84,7 @@ class DbModel extends Model
 		$table	= static::TABLE;
 		$sql	= "SELECT * FROM `${table}` WHERE `id`=:id LIMIT 1";
 
-		$results	= array_map([get_called_class(),"normalize"],Database::instance()->query($sql,compact("id")));
+		$results	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,compact("id")));
 		return empty($results)?null:current($results);
 	}
 

@@ -15,10 +15,10 @@ class User extends DbModel
 	const	MSG_ERR_FIELD_REQUIRED	= "Este campo es requisito.";
 	const	MSG_ERR_INVALID_ID		= "La matrícula es inválida.";
 
-	protected	$password;
 	protected	$token;
 	public		$id;
 	public		$name;
+	public		$password;
 	public		$phone;
 	public		$verified	= false;
 
@@ -39,7 +39,7 @@ class User extends DbModel
 
 	static public function tokenHashing(User $user)
 	{
-		return md5("${$user->id}:${$user->password}");
+		return md5("{$user->id}:{$user->password}");
 	}
 
 	static public function queryWithToken(string $token)

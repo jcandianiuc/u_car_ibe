@@ -81,8 +81,62 @@ class Trip extends DbModel
 		$this->user_id	= $user->id;
 	}
 
+
+	public function circleDistance($lat1, $lon1, $lat2, $lon2) {
+	  $rad = M_PI / 180;
+	  return acos(sin($lat2*$rad) * sin($lat1*$rad) + cos($lat2*$rad) * cos($lat1*$rad) * cos($lon2*$rad - $lon1*$rad)) * 6371 * 1000;// Metros
+	}
+
+
+	//Funcion para comparar una coordenada con el conjunto de coordenadas de una ruta
+
+	public function testMatch($marcador, $ruta , $distancemin){
+	  foreach($ruta as $coord){
+	    $dist= circleDistance($marcador["latitude"], $marcador["longitude"], $coord["latitude"], $coord["longitude"]);
+	    if ($dist <= $distancemin) {
+	      return TRUE;
+	    }
+	  }
+	  return FALSE;
+	}
+
+
 	public function findProposal()
 	{
+		if ($this->role == "driver") {
+			#Consulta obtener la ruta del conductor $this->id
+			$routedriver	= Marker::queryAllMatchingParamsInnerJoin([
+			'marker.trip_id'		=> $this->id,
+			'trip.role'		=> 0,
+			], "trip");
+
+			if (empty($routedriver))
+				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
+			else {
+				#Consulta para obtener marcadores de pasajeros
+				$markerpasseger	= Marker::queryAllMatchingParamsInnerJoin([
+				'trip.role'		=> 1,
+				], "trip");
+				if (empty($markerpasseger))
+					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
+				else {
+					foreach($markerpasseger as $marker){
+						var_dump(testMatch($marker, $routedriver ,200));
+					}
+
+
+				}
+			}
+		}
+		else{
+			#Consulta para obtener marcador del pasajero $this->id
+
+
+			#Consulta obtener las rutas de los conductores 
+
+
+		}
+
 		return null;
 	}
 

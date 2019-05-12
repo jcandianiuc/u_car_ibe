@@ -111,7 +111,7 @@ class Trip extends DbModel
 			// ], "trip");
 			$trip_id = $this->id;
 			$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `marker.trip_id`=:trip_id";
-			$routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id));
+			$routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id)));
 			var_dump($routedriver);
 
 			if (empty($routedriver))

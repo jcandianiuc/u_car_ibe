@@ -6,7 +6,7 @@ class Response extends Http
 {
 	private	$status;
 
-	public function __construct($body)
+	public function __construct($body="")
 	{
 		$this->headers	= array();
 		$this->galletas	= array();

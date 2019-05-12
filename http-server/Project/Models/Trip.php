@@ -121,7 +121,7 @@ class Trip extends DbModel
 					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 				else {
 					foreach($markerpasseger as $marker){
-						testMatch($marker, $routedriver ,200)
+						var_dump(testMatch($marker, $routedriver ,200));
 					}
 
 

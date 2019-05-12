@@ -92,7 +92,7 @@ class Trip extends DbModel
 
 	public function testMatch($marcador, $ruta , $distancemin){
 	  foreach($ruta as $coord){
-	    $dist= circleDistance($marcador->latitude, $marcador->longitude, $coord->latitude, $coord->longitude);
+	    $dist= $this->circleDistance($marcador->latitude, $marcador->longitude, $coord->latitude, $coord->longitude);
 	    if ($dist <= $distancemin) {
 	      return TRUE;
 	    }

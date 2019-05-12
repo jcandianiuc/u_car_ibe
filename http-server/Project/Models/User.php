@@ -15,10 +15,10 @@ class User extends DbModel
 	const	MSG_ERR_FIELD_REQUIRED	= "Este campo es requisito.";
 	const	MSG_ERR_INVALID_ID		= "La matrícula es inválida.";
 
-	protected	$password;
 	protected	$token;
 	public		$id;
 	public		$name;
+	public		$password;
 	public		$phone;
 	public		$verified	= false;
 

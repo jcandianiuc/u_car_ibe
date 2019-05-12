@@ -39,7 +39,7 @@ class User extends DbModel
 
 	static public function tokenHashing(User $user)
 	{
-		return md5("${$user->id}:${$user->password}");
+		return md5("{$user->id}:{$user->password}");
 	}
 
 	static public function queryWithToken(string $token)

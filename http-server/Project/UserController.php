@@ -49,7 +49,7 @@ class UserController extends Controller
 			throw new MethodNotAllowedException();
 
 		$users = User::queryAllMatchingParams([ # Buscar si hay algun registro con el mismo id
-			'id'		=> $request->data->id;
+			'id'		=> $request->data->id,
 		])
 
 		if (!empty($users)) # Si no esta vacio, quiere decir que hay un usuario ya registrado con ese id

@@ -114,17 +114,22 @@ class Trip extends DbModel
 			$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `marker`.`trip_id`=:trip_id AND `trip`.`role`=:role AND `trip`.`id`=:trip_id";
 			$routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
-			// $sql	= "SELECT * FROM `marker` WHERE `trip_id`=:trip_id LIMIT 1";
-			// $routedriver	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id)));
 
 			print_r ($routedriver);
 			if (empty($routedriver))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
 				#Consulta para obtener marcadores de pasajeros
-				$markerpasseger	= Marker::queryAllMatchingParamsInnerJoin([
-				'trip.role'		=> 1,
-				], "trip");
+				// $markerpasseger	= Marker::queryAllMatchingParamsInnerJoin([
+				// 'trip.role'		=> 1,
+				// ], "trip");
+				$trip_id = $this->id;
+				$role= 1;
+				$datetime1= $this->datetime;
+				$sql	= "SELECT * FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id`";
+				$markerpasseger	= array_map([get_called_class(),"normalization"],Database::instance()->query($sql,array(':role' => $role, ':datetime1' => $datetime1)));
+
+				print_r ($markerpasseger);
 				if (empty($markerpasseger))
 					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 				else {

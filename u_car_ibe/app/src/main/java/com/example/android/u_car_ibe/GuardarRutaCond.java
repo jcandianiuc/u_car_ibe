@@ -46,13 +46,14 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
         View.OnClickListener {
 
     private GoogleMap mMap;
-    String prueba;
     private GoogleApiClient mGoogleApiClient;
     LatLng[] coord;
     Location mLastLocation;
     private Sesiones sesion;
     LatLng Ucaribe= new LatLng(21.2013714,-86.8239155);
     private ArrayList<LatLng> arrayCoord = new ArrayList<LatLng>();
+    String prueba;
+
 
 
     @Override
@@ -101,6 +102,13 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         mMap.setMyLocationEnabled(true);
@@ -254,6 +262,7 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
 
         return json.toString();
     }
+
 
 
 

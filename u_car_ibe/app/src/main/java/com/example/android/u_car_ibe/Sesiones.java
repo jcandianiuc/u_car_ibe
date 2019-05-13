@@ -21,8 +21,8 @@ public class Sesiones {
         sesion.edit().putString("longitud", longitud).apply();
     }
 
-    public void guardarToUni(Boolean toUni){
-        sesion.edit().putBoolean("toUni", toUni).apply();
+    public void guardarDateTime(String Datetime){
+        sesion.edit().putString("datetime", Datetime).apply();
     }
 
     public void guardarContraseña(String password){
@@ -41,8 +41,8 @@ public class Sesiones {
         return sesion.getString("token", "");
    }
 
-   public Boolean obtenerToUni(){
-        return sesion.getBoolean("toUni", true);
+   public String obtenerDateTime(){
+        return sesion.getString("datetime", "");
    }
 
     public String obtenerUsuario(){

@@ -3,6 +3,7 @@
 namespace Project\Models;
 
 use Core\DbModel;
+use Core\Database;
 
 class Match extends DbModel
 {
@@ -16,8 +17,8 @@ class Match extends DbModel
 	const	MSG_ERR_FIELD_REQUIRED	= "Este campo es requisito.";
 	const	MSG_ERR_INVALID_STATUS	= "Valor inválido";
 
-	protected	$driver_trip_id;
-	protected	$passenger_trip_id;
+	public		$driver_trip_id;
+	public		$passenger_trip_id;
 	protected	$driver_status;
 	protected	$passenger_status;
 
@@ -26,7 +27,7 @@ class Match extends DbModel
 		// no se necesita hacer nada ya que los ids se especificaron manualmente
 	}
 
-	static public function existanceTest(DbModel $match)
+	static public function existanceTest(DbModel $match):bool
 	{
 		return ($match instanceof Match)&&!empty(Match::queryAllMatchingParams([
 			"driver_trip_id"	=> $match->driver_trip_id,

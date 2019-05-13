@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\HttpException\BadRequestException;
+
 class Request extends Http
 {
 	private	$data;
@@ -22,8 +24,14 @@ class Request extends Http
 		else {
 			$headers		= $this->getHeaders();
 			$content_type	= array_key_exists("Content-Type",$headers)?$headers['Content-Type']:null;
-			if ($content_type=="application/json")
-				return json_decode($this->getBody());
+			if ($content_type=="application/json") {
+				$jsobj	= json_decode($this->getBody());
+
+				if (json_last_error()!=JSON_ERROR_NONE)
+					throw new BadRequestException("invalid-json",json_last_error_msg());
+
+				return $jsobj;
+			}
 			else
 				return $_POST;
 		}

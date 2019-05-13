@@ -5,6 +5,7 @@ namespace Project\Models;
 use DateTime;
 use Core\Database;
 use Core\DbModel;
+use Project\Models\Match;
 
 class Trip extends DbModel
 {
@@ -115,8 +116,8 @@ class Trip extends DbModel
 			$routedriver	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
 
-			print_r ($routedriver);
-			print_r ("=========");
+			#print_r ($routedriver);
+			#print_r ("=========");
 			if (empty($routedriver))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
@@ -164,16 +165,27 @@ ENDOFQUERY;
 						':to_uni'	=> $this->to_uni,
 				)));
 
-				print_r ($markerpassenger);
+				#print_r ($markerpassenger);
 				if (empty($markerpassenger))
 					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 				else {
 					foreach($markerpassenger as $marker){
-						echo $this->testMatch($marker, $routedriver ,200)?"yes":"no";
-
+						if ($this->testMatch($marker, $routedriver ,200)) {
+							#echo "yes";
+							# verificar el trip id de pasajerp esta cancelado con otro trip id de conductor, o no este ese match
+							#Insertar el match encontrado 
+							$matching = new Match(); # Creamos un nuevo match
+							# Guardamos los datos del nuevo usuario
+							$matching->driver_trip_id = $routedriver[0]->trip_id;
+							$matching->passenger_trip_id = $marker->trip_id;
+							$matching->driver_status = 0;
+							$matching->passenger_status = 0;
+							# Insertar los datos en la BD
+							$matching->save();
+							#return exito
+							return null;
+						}
 					}
-
-
 				}
 			}
 		}
@@ -185,33 +197,59 @@ ENDOFQUERY;
 			$markerpassenger	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
 
-			print_r ($markerpassenger);
-			print_r ("=========");
+			#print_r ($markerpassenger);
+			#print_r ("=========");
 			if (empty($markerpassenger))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
-				#Consulta obtener las rutas de los conductores 
+				#Consulta obtener id de los conductores que coinciden
+				
 				$role= 0;
 				$sql	= "SELECT `trip_id` FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni GROUP BY `trip_id`";
 
 				$tripidroute	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':role' => $role, ':datetime1' => $this->datetime, ':to_uni' => $this->to_uni)));
 
 
-				print_r ($tripidroute);
-				print_r ("=========");
+				#print_r ($tripidroute);
+				#print_r ("=========");
 				if (empty($tripidroute))
 					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 				else {
+
+					foreach($tripidroute as $idroute){
+						#Consulta obtener las rutas de los conductores 
+						#echo $idroute->trip_id;
+						$sql	= "SELECT * FROM `marker` WHERE `trip_id`=:trip_id";
+
+						$routedriver	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $idroute->trip_id)));
+
+
+						#print_r ($routedriver);
+						#print_r ("=========");
+						if (empty($routedriver))
+							throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
+						else{
+							if ($this->testMatch($markerpassenger[0], $routedriver ,200)) {
+								#echo "yes";
+								# verificar el trip id de conductor esta cancelado con otro trip id de pasaje, o no este ese match
+								#Insertar el match encontrado 
+								$matching = new Match(); # Creamos un nuevo match
+								# Guardamos los datos del nuevo usuario
+								$matching->driver_trip_id = $idroute->trip_id;
+								$matching->passenger_trip_id = $markerpassenger[0]->trip_id;
+								$matching->driver_status = 0;
+								$matching->passenger_status = 0;
+								# Insertar los datos en la BD
+								$matching->save();
+								#return exito
+								#echo "Se insertio un match";
+								return null;
+							}
+						}
+					}
 				}
-
-
-				}
-
-
-			
+			}
 		}
-
-		return null;
 	}
 
 	public function saveWithMarkers()

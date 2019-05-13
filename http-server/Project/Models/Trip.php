@@ -217,7 +217,7 @@ ENDOFQUERY;
 							throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 						else{
 							echo $this->testMatch($markerpassenger[0], $routedriver ,200)?"yes":"no";
-							#return null;
+							return null;
 						}
 
 

@@ -189,7 +189,8 @@ ENDOFQUERY;
 			if (empty($markerpassenger))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
-				#Consulta obtener las rutas de los conductores 
+				#Consulta obtener id de los conductores que coinciden
+				
 				$role= 0;
 				$sql	= "SELECT `trip_id` FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni GROUP BY `trip_id`";
 
@@ -201,8 +202,15 @@ ENDOFQUERY;
 				if (empty($tripidroute))
 					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 				else {
-				}
 
+					foreach($tripidroute as $idroute){
+						#Consulta obtener las rutas de los conductores 
+						#echo $this->testMatch($marker, $routedriver ,200)?"yes":"no";
+						echo $idroute->trip_id;
+
+					}
+				}
+				
 
 				}
 

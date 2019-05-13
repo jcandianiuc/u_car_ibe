@@ -35,22 +35,26 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        app:layout_constraintLeft_toLeftOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
     <RadioGroup
         android:layout_width="357dp"
         android:layout_height="170dp"
-        android:layout_marginBottom="332dp"
+        android:layout_marginBottom="0dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="16dp">
+        app:layout_constraintBottom_toBottomOf="@id/tvDate"
+        app:layout_constraintTop_toTopOf="@id/textView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
         <RadioButton
             android:id="@+id/conductor"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="10dp"
             android:background="@android:color/holo_red_dark"
             android:button="@drawable/image_white_box"
             android:checked="false"
@@ -59,6 +63,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintVertical_bias="0.465" />
 
         <RadioButton
@@ -66,9 +71,8 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="0dp"
             android:layout_marginTop="20dp"
-
             android:background="@android:color/holo_red_dark"
             android:button="@drawable/image_white_box"
             android:checked="false"
@@ -88,12 +92,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginLeft="130dp"
-        android:layout_marginBottom="280dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginBottom="320dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:text="Fecha"
-        android:textSize="25dp"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/Time"/>
 
     <Button
         android:id="@+id/Time"
@@ -103,7 +110,7 @@
         android:layout_marginLeft="130dp"
         android:layout_marginBottom="210dp"
         android:text="Hora"
-        android:textSize="25dp"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

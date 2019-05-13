@@ -52,6 +52,8 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
     private Sesiones sesion;
     LatLng Ucaribe= new LatLng(21.2013714,-86.8239155);
     private ArrayList<LatLng> arrayCoord = new ArrayList<LatLng>();
+    String prueba;
+
 
 
     @Override
@@ -214,6 +216,11 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sesion.ConfirmarRuta(true);
+                        try {
+                            prueba= Coord2Json(coord);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         ActivConductor();
 
 
@@ -240,6 +247,22 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
         startActivity(back);
         //finish();
     }
+
+    public String Coord2Json(LatLng[] coord) throws JSONException {
+        //JSONObject json= new JSONObject();
+        ArrayList<JSONObject> json= new ArrayList<JSONObject>();
+
+        for (int i=0; i<coord.length;i++){
+            JSONObject json2= new JSONObject();
+            json2.put("latitude", coord[i].latitude);
+            json2.put("longitude", coord[i].longitude);
+            json.add(json2);
+        }
+
+
+        return json.toString();
+    }
+
 
 
 

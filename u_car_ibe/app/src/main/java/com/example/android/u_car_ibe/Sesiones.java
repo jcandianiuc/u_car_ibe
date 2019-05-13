@@ -21,6 +21,10 @@ public class Sesiones {
         sesion.edit().putString("longitud", longitud).apply();
     }
 
+    public void guardarDateTime(String Datetime){
+        sesion.edit().putString("datetime", Datetime).apply();
+    }
+
     public void guardarContraseña(String password){
         sesion.edit().putString("contraseña", password).apply();
     }
@@ -35,6 +39,10 @@ public class Sesiones {
 
    public String obtenerToken(){
         return sesion.getString("token", "");
+   }
+
+   public String obtenerDateTime(){
+        return sesion.getString("datetime", "");
    }
 
     public String obtenerUsuario(){

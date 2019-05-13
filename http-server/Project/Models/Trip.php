@@ -5,6 +5,7 @@ namespace Project\Models;
 use DateTime;
 use Core\Database;
 use Core\DbModel;
+use Project\Models\Match;
 
 class Trip extends DbModel
 {
@@ -190,8 +191,8 @@ ENDOFQUERY;
 			$markerpassenger	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
 
-			#print_r ($markerpassenger);
-			#print_r ("=========");
+			print_r ($markerpassenger);
+			print_r ("=========");
 			if (empty($markerpassenger))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
@@ -226,7 +227,16 @@ ENDOFQUERY;
 								echo "yes";
 								# verificar el trip id de conductor esta cancelado con otro trip id de pasaje, o no este ese match
 								#Insertar el match encontrado 
+								$matching = new Match(); # Creamos un nuevo match
+								# Guardamos los datos del nuevo usuario
+								$matching->driver_trip_id = $routedriver->trip_id;
+								$matching->passenger_trip_id = $markerpassenger[0]->trip_id;
+								$matching->driver_status = 0;
+								$matching->passenger_status = 0;
+								# Insertar los datos en la BD
+								$matching->save();
 								#return exito
+								echo "Se insertio un match";
 								return null;
 							}
 

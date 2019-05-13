@@ -3,6 +3,7 @@
 namespace Project\Models;
 
 use Core\DbModel;
+use Core\Database;
 
 class Match extends DbModel
 {
@@ -79,5 +80,10 @@ class Match extends DbModel
 				$errors[]	= ['code'=>"invalid-status",'message'=>self::MSG_ERR_INVALID_STATUS,'data'=>$fieldName];
 
 		return $errors;
+	}
+
+	public function save()
+	{
+		parent::save();
 	}
 }

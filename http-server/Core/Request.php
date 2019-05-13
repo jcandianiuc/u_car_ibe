@@ -20,7 +20,7 @@ class Request extends Http
 	private function dataResolution()
 	{
 		if ($this->method=="GET")
-			return $_GET;
+			return (object)$_GET;
 		else {
 			$headers		= $this->getHeaders();
 			$content_type	= array_key_exists("Content-Type",$headers)?$headers['Content-Type']:null;
@@ -33,7 +33,7 @@ class Request extends Http
 				return $jsobj;
 			}
 			else
-				return $_POST;
+				return (object)$_POST;
 		}
 	}
 

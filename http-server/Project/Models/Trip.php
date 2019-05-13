@@ -170,9 +170,17 @@ ENDOFQUERY;
 				else {
 					foreach($markerpassenger as $marker){
 						if ($this->testMatch($marker, $routedriver ,200)) {
-								echo "yes";
+								#echo "yes";
 								# verificar el trip id de pasajerp esta cancelado con otro trip id de conductor, o no este ese match
 								#Insertar el match encontrado 
+								$matching = new Match(); # Creamos un nuevo match
+								# Guardamos los datos del nuevo usuario
+								$matching->driver_trip_id = $routedriver[0]->trip_id;
+								$matching->passenger_trip_id = $marker->trip_id;
+								$matching->driver_status = 0;
+								$matching->passenger_status = 0;
+								# Insertar los datos en la BD
+								$matching->save();
 								#return exito
 								return null;
 							}
@@ -191,8 +199,8 @@ ENDOFQUERY;
 			$markerpassenger	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
 
-			print_r ($markerpassenger);
-			print_r ("=========");
+			#print_r ($markerpassenger);
+			#print_r ("=========");
 			if (empty($markerpassenger))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
@@ -212,7 +220,7 @@ ENDOFQUERY;
 
 					foreach($tripidroute as $idroute){
 						#Consulta obtener las rutas de los conductores 
-						echo $idroute->trip_id;
+						#echo $idroute->trip_id;
 						$sql	= "SELECT * FROM `marker` WHERE `trip_id`=:trip_id";
 
 						$routedriver	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $idroute->trip_id)));
@@ -224,11 +232,9 @@ ENDOFQUERY;
 							throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 						else{
 							if ($this->testMatch($markerpassenger[0], $routedriver ,200)) {
-								echo "yes";
+								#echo "yes";
 								# verificar el trip id de conductor esta cancelado con otro trip id de pasaje, o no este ese match
 								#Insertar el match encontrado 
-								echo $idroute->trip_id;
-								echo $markerpassenger[0]->trip_id;
 								$matching = new Match(); # Creamos un nuevo match
 								# Guardamos los datos del nuevo usuario
 								$matching->driver_trip_id = $idroute->trip_id;
@@ -238,7 +244,7 @@ ENDOFQUERY;
 								# Insertar los datos en la BD
 								$matching->save();
 								#return exito
-								echo "Se insertio un match";
+								#echo "Se insertio un match";
 								return null;
 							}
 

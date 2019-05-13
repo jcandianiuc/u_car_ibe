@@ -24,7 +24,7 @@ class DbModel extends Model
 		{
 			return ":${fieldName}";
 		},array_keys($values)));
-		$sql			= "INSERT INTO ${table}(${columns_sql}) VALUES (${values_sql})";
+		$sql			= "INSERT INTO `${table}`(${columns_sql}) VALUES (${values_sql})";
 
 		$result	= Database::instance()->execute($sql,$values);
 		static::handleCreation($record,$result);

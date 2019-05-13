@@ -115,8 +115,8 @@ class Trip extends DbModel
 			$routedriver	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
 
-			print_r ($routedriver);
-			print_r ("=========");
+			#print_r ($routedriver);
+			#print_r ("=========");
 			if (empty($routedriver))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
@@ -163,13 +163,16 @@ ENDOFQUERY;
 						':to_uni'	=> $this->to_uni,
 				)));
 
-				print_r ($markerpassenger);
+				#print_r ($markerpassenger);
 				if (empty($markerpassenger))
 					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 				else {
 					foreach($markerpassenger as $marker){
 						if ($this->testMatch($marker, $routedriver ,200)) {
 								echo "yes";
+								# verificar el trip id de pasajerp esta cancelado con otro trip id de conductor, o no este ese match
+								#Insertar el match encontrado 
+								#return exito
 								return null;
 							}
 
@@ -221,6 +224,9 @@ ENDOFQUERY;
 						else{
 							if ($this->testMatch($markerpassenger[0], $routedriver ,200)) {
 								echo "yes";
+								# verificar el trip id de conductor esta cancelado con otro trip id de pasaje, o no este ese match
+								#Insertar el match encontrado 
+								#return exito
 								return null;
 							}
 

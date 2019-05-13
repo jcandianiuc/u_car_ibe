@@ -23,14 +23,14 @@ class Proposal extends Model
 		parent::__construct($filling);
 	}
 
-	static private function handleResultSet(array $resultset)
+	static private function handleResultSet(array $resultset,int $user_id,int $trip_id)
 	{
 		if (empty($resultset))
 			return null;
 		else {
 			$data		= $resultset[0];
 			$markers	= array_map(["Project\Models\Marker","normalization"],json_decode($data['markers']));
-			return new Proposal($params['user_id'],$params['trip_id'],array_merge($data,compact("markers")));
+			return new Proposal($user_id,$trip_id,array_merge($data,compact("markers")));
 		}
 	}
 
@@ -70,7 +70,11 @@ class Proposal extends Model
 				GROUP BY `match`.`driver_trip_id`,`match`.`passenger_trip_id`
 ENDOFQUERY;
 		
-		return self::handleResultSet(Database::instance()->query($sql,$params));
+		return self::handleResultSet(
+			Database::instance()->query($sql,$params),
+			$params['user_id'],
+			$params['trip_id']
+		);
 	}
 
 	static public function queryActualWithTripIdAndUserId(int $trip_id,int $user_id)
@@ -105,7 +109,11 @@ ENDOFQUERY;
 				GROUP BY `match`.`driver_trip_id`,`match`.`passenger_trip_id`
 ENDOFQUERY;
 
-		return self::handleResultSet(Database::instance()->query($sql,compact("trip_id","user_id")));
+		return self::handleResultSet(
+			Database::instance()->query($sql,compact("trip_id","user_id")),
+			$params['user_id'],
+			$params['trip_id']
+		);
 	}
 
 	public function getMatch()

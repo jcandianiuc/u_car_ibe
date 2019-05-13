@@ -207,7 +207,19 @@ ENDOFQUERY;
 						#Consulta obtener las rutas de los conductores 
 						#echo $this->testMatch($marker, $routedriver ,200)?"yes":"no";
 						echo $idroute->trip_id;
-						
+						$sql	= "SELECT * FROM `marker` WHERE `trip_id`=:trip_id";
+
+						$routedriver	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => 36)));
+
+
+						print_r ($routedriver);
+						print_r ("=========");
+						if (empty($routedriver))
+							throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
+						else{
+							
+						}
+
 
 					}
 				}

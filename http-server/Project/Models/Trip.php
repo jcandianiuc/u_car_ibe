@@ -216,8 +216,8 @@ ENDOFQUERY;
 						if (empty($routedriver))
 							throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 						else{
-							#echo $this->testMatch($marker, $routedriver ,200)?"yes":"no";
-							echo $markerpassenger[0]->latitude;
+							echo $this->testMatch($markerpassenger[0], $routedriver ,200)?"yes":"no";
+							#echo $markerpassenger[0]->latitude;
 							return null;
 						}
 

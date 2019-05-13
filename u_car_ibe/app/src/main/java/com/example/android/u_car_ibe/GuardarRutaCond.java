@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -37,6 +40,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,11 +61,10 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
     LatLng[] coord;
     Location mLastLocation;
     private Sesiones sesion;
-    LatLng Ucaribe= new LatLng(21.2013714,-86.8239155);
+    LatLng Ucaribe = new LatLng(21.2013714, -86.8239155);
     private ArrayList<LatLng> arrayCoord = new ArrayList<LatLng>();
     String prueba;
-
-
+    String marcadores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,8 +161,8 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-    public void moveMap(){
-        LatLng mylatlng= new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+    public void moveMap() {
+        LatLng mylatlng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         //mMap.addMarker(new MarkerOptions().position(mylatlng).draggable(true).title("actual"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(mylatlng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -162,7 +172,7 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
 
 
     public void onClick(View view) {
-        Log.v("Algo","view click event");
+        Log.v("Algo", "view click event");
     }
 
     public void onMapLongClick(LatLng latLng) {
@@ -189,15 +199,15 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
     }
 
 
-    public void Poly(){
-        if (arrayCoord.size() < 3){
+    public void Poly() {
+        if (arrayCoord.size() < 3) {
             Toast.makeText(this, "Por favor, ingresa al menos 3 marcadores.", Toast.LENGTH_LONG);
             return;
         }
 
         //LatLng coordenadas= new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         arrayCoord.add(Ucaribe);
-        coord= arrayCoord.toArray(new LatLng[arrayCoord.size()]);
+        coord = arrayCoord.toArray(new LatLng[arrayCoord.size()]);
 
         Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
                 .clickable(true)
@@ -206,21 +216,28 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(coordenadas));
     }
 
-    public void Confirm(){
+    public void Confirm() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Confirmar ruta");
         builder.setMessage("¿Estás seguro?");
         builder.setPositiveButton("Confirmar",
                 new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sesion.ConfirmarRuta(true);
                         try {
-                            prueba= Coord2Json(coord);
+                            marcadores = Coord2Json(coord);
+                            prueba = CrearJSON(marcadores);
+                            prueba= prueba.replace("\\", "");
+                            prueba=prueba.replace("\"" + marcadores + "\"", marcadores);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        SendJSON json = new SendJSON(prueba, sesion.obtenerToken());
+
+                        json.execute((Void) null);
                         ActivConductor();
 
 
@@ -236,12 +253,12 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
         dialog.show();
     }
 
-    public void ActivConductor(){
-        Intent ruta= new Intent(this, Conductor.class);
+    public void ActivConductor() {
+        Intent ruta = new Intent(this, Conductor.class);
         startActivity(ruta);
     }
 
-    public void onBackPressed(){
+    public void onBackPressed() {
         super.onBackPressed();
         Intent back = new Intent(this, LoginExitoso.class);
         startActivity(back);
@@ -250,10 +267,10 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
 
     public String Coord2Json(LatLng[] coord) throws JSONException {
         //JSONObject json= new JSONObject();
-        ArrayList<JSONObject> json= new ArrayList<JSONObject>();
+        ArrayList<JSONObject> json = new ArrayList<JSONObject>();
 
-        for (int i=0; i<coord.length;i++){
-            JSONObject json2= new JSONObject();
+        for (int i = 0; i < coord.length; i++) {
+            JSONObject json2 = new JSONObject();
             json2.put("latitude", coord[i].latitude);
             json2.put("longitude", coord[i].longitude);
             json.add(json2);
@@ -263,8 +280,98 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
         return json.toString();
     }
 
+    public String CrearJSON(String markers) throws JSONException {
+        JSONObject json = new JSONObject();
+        Boolean toUni = sesion.obtenerToUni();
+        String dtime = sesion.obtenerDateTime();
+        String role = "driver";
+        String prueba= markers;
+        json.put("datetime", dtime);
+        json.put("role", role);
+        json.put("to_uni", toUni);
+        json.put("markers", markers);
 
-
+        return json.toString();
+    }
 
 }
+class SendJSON extends AsyncTask<Void, Void, Boolean>{
+    private String jsonString;
+    private String token;
+
+
+    SendJSON(String json, String tkn){
+        jsonString= json;
+        token= tkn;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    protected Boolean doInBackground(Void... voids) {
+        try {
+
+            Send(jsonString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void Send(String json) throws IOException {
+        InputStream is;
+        String result;
+
+
+        try {
+            URL url = new URL("http://187.153.22.193/trip/start");
+            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();//Se realiza la conexión
+
+            httpConn.setRequestMethod("POST");
+            httpConn.setRequestProperty("Content-Type", "application/json");
+            httpConn.setRequestProperty("Accept", "application/json");
+            String tokenPrueba= "Token " + token;
+            tokenPrueba= tokenPrueba.replace("\"", "");
+            httpConn.setRequestProperty("Authorization", tokenPrueba);
+            httpConn.setDoOutput(true);
+
+            //String input= "{\"id\":\"" + mUsername +"\"," + "\"password\":\"" + mPassword + "\"}";
+
+            httpConn.connect();
+            try (OutputStream os = httpConn.getOutputStream()) {
+                byte[] query = json.getBytes("utf-8");
+                os.write(query, 0, query.length);
+            }
+            int code= httpConn.getResponseCode();
+            int algo= 0;
+
+
+            is = httpConn.getInputStream(); //Se obtiene el resultado
+            result = convertStreamToString(is);//Se convierte a String*/
+        } catch (Exception e) {
+            result = e.toString();
+        }
+    }
+
+    private String convertStreamToString(InputStream is) throws IOException { //Para convertir a String
+        if (is != null) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            try {
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(is, "UTF-8"));
+                while ((line = reader.readLine()) != null) {
+                    //sb.append(line).append("");
+                    sb.append(line);
+                }
+            } finally {
+                is.close();
+            }
+            return sb.toString();
+        } else {
+            return "";
+        }
+    }
+}
+
+
+
 

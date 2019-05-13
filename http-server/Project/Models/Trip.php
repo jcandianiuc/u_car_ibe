@@ -5,7 +5,6 @@ namespace Project\Models;
 use DateTime;
 use Core\Database;
 use Core\DbModel;
-use Core\HttpException\BadRequestException;
 use Project\Models\Match;
 
 class Trip extends DbModel
@@ -120,7 +119,7 @@ class Trip extends DbModel
 			#print_r ($routedriver);
 			#print_r ("=========");
 			if (empty($routedriver))
-				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
+				return null;
 			else {
 				#Consulta para obtener marcadores de pasajeros
 				// $markerpassenger	= Marker::queryAllMatchingParamsInnerJoin([
@@ -168,7 +167,7 @@ ENDOFQUERY;
 
 				#print_r ($markerpassenger);
 				if (empty($markerpassenger))
-					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
+					return null;
 				else {
 					foreach($markerpassenger as $marker){
 						if ($this->testMatch($marker, $routedriver ,200)) {
@@ -201,7 +200,7 @@ ENDOFQUERY;
 			#print_r ($markerpassenger);
 			#print_r ("=========");
 			if (empty($markerpassenger))
-				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
+				return null;
 			else {
 				#Consulta obtener id de los conductores que coinciden
 				
@@ -252,7 +251,7 @@ ENDOFQUERY;
 				#print_r ($tripidroute);
 				#print_r ("=========");
 				if (empty($tripidroute))
-					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
+					return null;
 				else {
 
 					foreach($tripidroute as $idroute){
@@ -266,7 +265,7 @@ ENDOFQUERY;
 						#print_r ($routedriver);
 						#print_r ("=========");
 						if (empty($routedriver))
-							throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
+							return null;
 						else{
 							if ($this->testMatch($markerpassenger[0], $routedriver ,200)) {
 								#echo "yes";

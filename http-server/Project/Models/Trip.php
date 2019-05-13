@@ -184,8 +184,8 @@ ENDOFQUERY;
 			$markerpassenger	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
 
-			print_r ($markerpassenger);
-			print_r ("=========");
+			#print_r ($markerpassenger);
+			#print_r ("=========");
 			if (empty($markerpassenger))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
@@ -211,14 +211,13 @@ ENDOFQUERY;
 						$routedriver	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $idroute->trip_id)));
 
 
-						print_r ($routedriver);
-						print_r ("=========");
+						#print_r ($routedriver);
+						#print_r ("=========");
 						if (empty($routedriver))
 							throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 						else{
 							echo $this->testMatch($markerpassenger[0], $routedriver ,200)?"yes":"no";
-							#echo $markerpassenger[0]->latitude;
-							return null;
+							#return null;
 						}
 
 

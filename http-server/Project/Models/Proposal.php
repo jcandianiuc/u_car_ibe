@@ -51,7 +51,7 @@ class Proposal extends Model
 				
 				FROM		`trip`
 					JOIN	`match`
-							(`trip`.`role`=0 AND `trip`.`id`=`match`.`driver_trip_id`)
+						ON	(`trip`.`role`=0 AND `trip`.`id`=`match`.`driver_trip_id`)
 							OR	(`trip`.`id`=`match`.`passenger_trip_id`)
 					JOIN	`trip`		AS `proposal`
 						ON	(`trip`.`role`=0 AND `match`.`passenger_trip_id`=`proposal`.`id`)
@@ -88,7 +88,7 @@ ENDOFQUERY;
 				
 				FROM		`trip`
 					JOIN	`match`
-							(`trip`.`role`=0 AND `trip`.`id`=`match`.`driver_trip_id`)
+						ON	(`trip`.`role`=0 AND `trip`.`id`=`match`.`driver_trip_id`)
 							OR	(`trip`.`id`=`match`.`passenger_trip_id`)
 					JOIN	`trip`		AS `proposal`
 						ON	(`trip`.`role`=0 AND `match`.`passenger_trip_id`=`proposal`.`id`)

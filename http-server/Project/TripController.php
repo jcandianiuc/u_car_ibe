@@ -53,7 +53,7 @@ class TripController extends Controller
 		if ($request->method!="POST")
 			throw new MethodNotAllowedException();
 
-		$errors	= array()
+		$errors	= array();
 		if (empty($request->data->trip_id))
 			$errors[]	= ['code'=>"required",'message'=>self::MSG_ERR_FIELD_REQUIRED,'data'=>"trip_id"];
 		if (empty($request->data->proposal_id))

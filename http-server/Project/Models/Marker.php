@@ -19,7 +19,7 @@ class Marker extends DbModel
 
 	static public function normalization($value)
 	{
-		if (is_array($value)&&array_keys($value)[0]==0&&array_keys($value)[1]==1)
+		if (is_array($value)&&count($value)==2&&array_keys($value)[0]==0&&array_keys($value)[1]==1)
 			return new Marker(['latitude'=>$value[0],'longitude'=>$value[1]]);
 		else
 			return parent::normalization($value);

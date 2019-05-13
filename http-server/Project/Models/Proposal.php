@@ -185,7 +185,7 @@ ENDOFQUERY;
 		return [
 			'id'		=> $this->id,
 			'status'	=> $this->getStatus(),
-			'markers'	=> $this->markers===null?null:array_map([get_called_class(),"markerSerialization"]),
+			'markers'	=> $this->markers===null?null:array_map([get_called_class(),"markerSerialization"],$this->markers),
 			'contact'	=> $this->contact,
 		];
 	}

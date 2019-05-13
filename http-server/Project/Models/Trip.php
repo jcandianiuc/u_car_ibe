@@ -227,6 +227,8 @@ ENDOFQUERY;
 								echo "yes";
 								# verificar el trip id de conductor esta cancelado con otro trip id de pasaje, o no este ese match
 								#Insertar el match encontrado 
+								echo $routedriver->trip_id;;
+								echo $markerpassenger[0]->trip_id;
 								$matching = new Match(); # Creamos un nuevo match
 								# Guardamos los datos del nuevo usuario
 								$matching->driver_trip_id = $routedriver->trip_id;

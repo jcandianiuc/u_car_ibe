@@ -204,10 +204,46 @@ ENDOFQUERY;
 			else {
 				#Consulta obtener id de los conductores que coinciden
 				
-				$role= 0;
-				$sql	= "SELECT `trip_id` FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni GROUP BY `trip_id`";
+				// $role= 0;
+				// $sql	= "SELECT `trip_id` FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni GROUP BY `trip_id`";
 
-				$tripidroute	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':role' => $role, ':datetime1' => $this->datetime, ':to_uni' => $this->to_uni)));
+				// $tripidroute	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':role' => $role, ':datetime1' => $this->datetime, ':to_uni' => $this->to_uni)));
+
+				$sql	= <<<ENDOFQUERY
+					SELECT	`proposal`.`id`					AS `trip_id`,
+							`proposed`.`driver_status`,
+							`proposed`.`passenger_status`
+
+						FROM	`trip`				AS `proposal`
+							LEFT JOIN	`match`		AS `proposed`
+								ON	(`proposal`.`role`=0
+										AND `proposal`.`id`=`proposed`.`driver_trip_id`
+										AND `proposed`.`passenger_trip_id`=:trip_id
+									)
+									OR	(`proposal`.`id`=`proposed`.`passenger_trip_id`
+											AND `proposed`.`driver_trip_id`=:trip_id)
+
+							JOIN		`marker`
+								ON	`proposal`.`id`=`marker`.`trip_id`
+
+						WHERE	`proposal`.`role`!=:role
+								AND	`proposal`.`to_uni`=:to_uni
+								AND (`proposed`.`driver_trip_id` IS NULL
+										OR	(`proposed`.`driver_status`!=2 AND `proposed`.`passenger_status`!=2)
+								)
+								AND ABS(TIMESTAMPDIFF(MINUTE,`proposal`.datetime`,:datetime)))<=30
+								AND ( (SELECT COUNT(*) FROM `match` WHERE `match`.`driver_trip_id`=`proposal`.`id` AND `match`.`passenger_trip_id`!=:trip_id)=0)
+								GROUP BY trip_id
+ENDOFQUERY;
+				//"SELECT * FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni";
+				$tripidroute	= array_map(
+					["Project\Models\Marker","normalization"],
+					Database::instance()->query($sql,array(
+						':trip_id'	=> $this->id,
+						':datetime'	=> $this->datetime,
+						':role'		=> $this->role,
+						':to_uni'	=> $this->to_uni,
+				)));
 
 
 				#print_r ($tripidroute);

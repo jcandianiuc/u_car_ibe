@@ -211,6 +211,8 @@ ENDOFQUERY;
 
 				$sql	= <<<ENDOFQUERY
 					SELECT	`proposal`.`id`					AS `trip_id`,
+							`marker`.`latitude`				AS `latitude`,
+							`marker`.`longitude`			AS `longitude`,
 							`proposed`.`driver_status`,
 							`proposed`.`passenger_status`
 
@@ -231,9 +233,9 @@ ENDOFQUERY;
 								AND (`proposed`.`driver_trip_id` IS NULL
 										OR	(`proposed`.`driver_status`!=2 AND `proposed`.`passenger_status`!=2)
 								)
-								AND ABS(TIMESTAMPDIFF(MINUTE,`proposal`.datetime`,:datetime)))<=30
+								AND ABS(TIMESTAMPDIFF(MINUTE,`proposal`.`datetime`,:datetime))<=30
 								AND ( (SELECT COUNT(*) FROM `match` WHERE `match`.`driver_trip_id`=`proposal`.`id` AND `match`.`passenger_trip_id`!=:trip_id)=0)
-								GROUP BY trip_id
+						GROUP BY trip_id
 ENDOFQUERY;
 				//"SELECT * FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni";
 				$tripidroute	= array_map(

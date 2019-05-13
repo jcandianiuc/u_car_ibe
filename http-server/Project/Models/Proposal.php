@@ -136,7 +136,7 @@ ENDOFQUERY;
 	public function getTrip_id(){ return $this->trip_id; }
 	public function getUser_id(){ return $this->user_id; }
 
-	public function fill(array $filling)
+	public function fill(array $filling):void
 	{
 		$contact_keys	= array_filter(array_keys($filling),function($key)
 		{

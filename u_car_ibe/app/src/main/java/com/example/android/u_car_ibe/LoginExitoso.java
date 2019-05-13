@@ -34,7 +34,7 @@ public class LoginExitoso extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     RadioButton rb1,rb2;
     RadioButton Cond, Passg;
-
+    String dtime;
     private Button eReminderTime;
     private TimePickerDialog.OnTimeSetListener mTimeSetListener;
 
@@ -68,20 +68,28 @@ public class LoginExitoso extends AppCompatActivity {
                 if(rb1.isChecked() && Passg.isChecked() ){
                     tvSeleccionado.setText(rb1.getText());
                     tvSeleccionado.setText(Passg.getText());
+                    sesion.guardarToUni(true);
+                    sesion.guardarDateTime(dtime);
                     ElegirPasajero();
 
                 }else if(rb2.isChecked() && Passg.isChecked()){
                     tvSeleccionado.setText(rb2.getText());
                     tvSeleccionado.setText(Passg.getText());
+                    sesion.guardarToUni(false);
+                    sesion.guardarDateTime(dtime);
                     ElegirPasajero();
                 }else if(rb1.isChecked() && Cond.isChecked()){
                     tvSeleccionado.setText(rb1.getText());
                     tvSeleccionado.setText(Cond.getText());
+                    sesion.guardarToUni(true);
+                    sesion.guardarDateTime(dtime);
                     ElegirConductor();
 
                 }else if(rb2.isChecked() && Cond.isChecked()){
                     tvSeleccionado.setText(rb2.getText());
                     tvSeleccionado.setText(Cond.getText());
+                    sesion.guardarToUni(false);
+                    sesion.guardarDateTime(dtime);
                     ElegirConductor();
                 }else{
                     tvSeleccionado.setText("No ha seleccionado las opciones necesarias");
@@ -106,8 +114,9 @@ public class LoginExitoso extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
 
-                Log.d(TAG, "onDateSet: dd/mm/yyyy: " + day + "/" + month + "/" + year);
+                Log.d(TAG, "onDateSet: dd/mm/yyyy: " + day + "/" + month + 1 + "/" + year);
                 String date = day + "/" + month + "/" + year;
+                dtime= year + "-" + month + "-" + day;
                 mDisplayDate.setText(date);
             }
         };
@@ -124,7 +133,21 @@ public class LoginExitoso extends AppCompatActivity {
                 mTimePicker = new TimePickerDialog(LoginExitoso.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-                        eReminderTime.setText(hour + ":" + minute);
+                        //eReminderTime.setText(hour + ":" + minute);
+                        if(hour<10 && minute<10){
+                            eReminderTime.setText("0" + hour + ":0" + minute);
+                            dtime= dtime + " 0" + hour + ":0" + minute + ":00";
+                        }else if(minute<10) {
+                            eReminderTime.setText(hour + ":0" + minute);
+                            dtime= dtime + " " + hour + ":0" + minute + ":00";
+                        }else if(hour<10) {
+                            eReminderTime.setText("0" + hour + ":" + minute);
+                            dtime= dtime + " 0" + hour + ":" + minute + ":00";
+                        }else{
+                            eReminderTime.setText(hour + ":" + minute);
+                            dtime= dtime + " " + hour + ":" + minute + ":00";
+                        }
+
                     }
                 },hour,minute,true);
 

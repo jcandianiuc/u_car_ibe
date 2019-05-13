@@ -23,15 +23,23 @@ class Proposal extends Model
 		parent::__construct($filling);
 	}
 
-	static private function handleResultSet(array $resultset)
+	static private function handleResultSet(array $resultset,int $user_id,int $trip_id)
 	{
 		if (empty($resultset))
 			return null;
 		else {
 			$data		= $resultset[0];
 			$markers	= array_map(["Project\Models\Marker","normalization"],json_decode($data['markers']));
-			return new Proposal($params['user_id'],$params['trip_id'],array_merge($data,compact("markers")));
+			return new Proposal($user_id,$trip_id,array_merge($data,compact("markers")));
 		}
+	}
+
+	static private function markerSerialization(Marker $marker)
+	{
+		return [
+			'latitude'	=> $marker->latitude,
+			'longitude'	=> $marker->longitude,
+		];
 	}
 
 	static public function queryWithIds(array $params)
@@ -39,7 +47,8 @@ class Proposal extends Model
 		if (!isset($params['trip_id'],$params['user_id'],$params['proposal_id']))
 			throw new Exception("missing-parameters");
 		$sql	= <<<ENDOFQUERY
-			SELECT  `trip`.`role`															AS	`trip_role`,
+			SELECT  `proposal`.`id`															AS	`id`,
+					`trip`.`role`															AS	`trip_role`,
 					IF(`trip`.`role`=0,`match`.`driver_status`,`match`.`passenger_status`)	AS  `own_status`,
 					IF(`trip`.`role`=0,`match`.`passenger_status`,`match`.`driver_status`)	AS  `other_status`,
 					`contact`.`name`														AS  `contact_name`,
@@ -51,7 +60,7 @@ class Proposal extends Model
 				
 				FROM		`trip`
 					JOIN	`match`
-							(`trip`.`role`=0 AND `trip`.`id`=`match`.`driver_trip_id`)
+						ON	(`trip`.`role`=0 AND `trip`.`id`=`match`.`driver_trip_id`)
 							OR	(`trip`.`id`=`match`.`passenger_trip_id`)
 					JOIN	`trip`		AS `proposal`
 						ON	(`trip`.`role`=0 AND `match`.`passenger_trip_id`=`proposal`.`id`)
@@ -70,13 +79,18 @@ class Proposal extends Model
 				GROUP BY `match`.`driver_trip_id`,`match`.`passenger_trip_id`
 ENDOFQUERY;
 		
-		return self::handleResultSet(Database::instance()->query($sql,$params));
+		return self::handleResultSet(
+			Database::instance()->query($sql,$params),
+			$params['user_id'],
+			$params['trip_id']
+		);
 	}
 
 	static public function queryActualWithTripIdAndUserId(int $trip_id,int $user_id)
 	{
 		$sql	= <<<ENDOFQUERY
-			SELECT  `trip`.`role`															AS	`trip_role`,
+			SELECT  `proposal`.`id`															AS	`id`,
+					`trip`.`role`															AS	`trip_role`,
 					IF(`trip`.`role`=0,`match`.`driver_status`,`match`.`passenger_status`)	AS  `own_status`,
 					IF(`trip`.`role`=0,`match`.`passenger_status`,`match`.`driver_status`)	AS  `other_status`,
 					`contact`.`name`														AS  `contact_name`,
@@ -88,7 +102,7 @@ ENDOFQUERY;
 				
 				FROM		`trip`
 					JOIN	`match`
-							(`trip`.`role`=0 AND `trip`.`id`=`match`.`driver_trip_id`)
+						ON	(`trip`.`role`=0 AND `trip`.`id`=`match`.`driver_trip_id`)
 							OR	(`trip`.`id`=`match`.`passenger_trip_id`)
 					JOIN	`trip`		AS `proposal`
 						ON	(`trip`.`role`=0 AND `match`.`passenger_trip_id`=`proposal`.`id`)
@@ -105,7 +119,11 @@ ENDOFQUERY;
 				GROUP BY `match`.`driver_trip_id`,`match`.`passenger_trip_id`
 ENDOFQUERY;
 
-		return self::handleResultSet(Database::instance()->query($sql,compact("trip_id","user_id")));
+		return self::handleResultSet(
+			Database::instance()->query($sql,compact("trip_id","user_id")),
+			$user_id,
+			$trip_id
+		);
 	}
 
 	public function getMatch()
@@ -136,11 +154,11 @@ ENDOFQUERY;
 	public function getTrip_id(){ return $this->trip_id; }
 	public function getUser_id(){ return $this->user_id; }
 
-	public function fill(array $filling)
+	public function fill(array $filling):void
 	{
-		$contact_keys	= array_filter(array_keys($filling),function($key)
+		$contact_keys	= array_filter(array_keys($filling),function($key) use ($filling)
 		{
-			return strpos($key,"contact_")===0;
+			return strpos($key,"contact_")===0&&$filling[$key]!==null;
 		});
 		if (!empty($contact_keys)) {
 			if (empty($this->contact))
@@ -167,7 +185,7 @@ ENDOFQUERY;
 		return [
 			'id'		=> $this->id,
 			'status'	=> $this->getStatus(),
-			'markers'	=> $this->markers,
+			'markers'	=> $this->markers===null?null:array_map([get_called_class(),"markerSerialization"],$this->markers),
 			'contact'	=> $this->contact,
 		];
 	}

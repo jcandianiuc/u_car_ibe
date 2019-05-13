@@ -336,6 +336,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     is = httpConn.getInputStream(); //Se obtiene el resultado
                     result = convertStreamToString(is);//Se convierte a String*/
+                    result= result.substring(1, result.length()-1);
 
                 } catch (Exception e) {
                     result = "No";

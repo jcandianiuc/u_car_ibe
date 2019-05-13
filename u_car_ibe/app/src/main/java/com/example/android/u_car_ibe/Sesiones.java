@@ -69,6 +69,14 @@ public class Sesiones {
         sesion.edit().putBoolean("conexion", verify ).apply();
     }
 
+    public void guardarToUni(Boolean toUni){
+        sesion.edit().putBoolean("toUni", toUni).apply();
+    }
+
+    public Boolean obtenerToUni(){
+        return sesion.getBoolean("toUni", true);
+    }
+
     public boolean obtenerVerificacionCon(){
         return sesion.getBoolean("conexion", false);
     }

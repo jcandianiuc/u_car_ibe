@@ -22,7 +22,7 @@ class Match extends DbModel
 	protected	$driver_status;
 	protected	$passenger_status;
 
-	static public function handleCreation(DbModel $match)
+	static public function handleCreation(DbModel $match,array $result)
 	{
 		// no se necesita hacer nada ya que los ids se especificaron manualmente
 	}

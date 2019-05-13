@@ -34,12 +34,21 @@ class Proposal extends Model
 		}
 	}
 
+	static private function markerSerialization(Marker $marker)
+	{
+		return [
+			'latitude'	=> $marker->latitude,
+			'longitude'	=> $marker->longitude,
+		];
+	}
+
 	static public function queryWithIds(array $params)
 	{
 		if (!isset($params['trip_id'],$params['user_id'],$params['proposal_id']))
 			throw new Exception("missing-parameters");
 		$sql	= <<<ENDOFQUERY
-			SELECT  `trip`.`role`															AS	`trip_role`,
+			SELECT  `proposal`.`id`															AS	`id`,
+					`trip`.`role`															AS	`trip_role`,
 					IF(`trip`.`role`=0,`match`.`driver_status`,`match`.`passenger_status`)	AS  `own_status`,
 					IF(`trip`.`role`=0,`match`.`passenger_status`,`match`.`driver_status`)	AS  `other_status`,
 					`contact`.`name`														AS  `contact_name`,
@@ -80,7 +89,8 @@ ENDOFQUERY;
 	static public function queryActualWithTripIdAndUserId(int $trip_id,int $user_id)
 	{
 		$sql	= <<<ENDOFQUERY
-			SELECT  `trip`.`role`															AS	`trip_role`,
+			SELECT  `proposal`.`id`															AS	`id`,
+					`trip`.`role`															AS	`trip_role`,
 					IF(`trip`.`role`=0,`match`.`driver_status`,`match`.`passenger_status`)	AS  `own_status`,
 					IF(`trip`.`role`=0,`match`.`passenger_status`,`match`.`driver_status`)	AS  `other_status`,
 					`contact`.`name`														AS  `contact_name`,
@@ -146,9 +156,9 @@ ENDOFQUERY;
 
 	public function fill(array $filling):void
 	{
-		$contact_keys	= array_filter(array_keys($filling),function($key)
+		$contact_keys	= array_filter(array_keys($filling),function($key) use ($filling)
 		{
-			return strpos($key,"contact_")===0;
+			return strpos($key,"contact_")===0&&$filling[$key]!==null;
 		});
 		if (!empty($contact_keys)) {
 			if (empty($this->contact))
@@ -175,7 +185,7 @@ ENDOFQUERY;
 		return [
 			'id'		=> $this->id,
 			'status'	=> $this->getStatus(),
-			'markers'	=> $this->markers,
+			'markers'	=> $this->markers===null?null:array_map([get_called_class(),"markerSerialization"]),
 			'contact'	=> $this->contact,
 		];
 	}

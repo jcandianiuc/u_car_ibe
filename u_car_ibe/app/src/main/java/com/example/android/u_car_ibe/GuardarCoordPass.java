@@ -5,8 +5,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +31,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnMapLongClickListener,
@@ -37,6 +52,8 @@ public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCall
     Location mLastLocation;
     private Sesiones sesion;
     LatLng coordenada;
+    String coordJSON;
+    String jsonFinal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +151,7 @@ public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCall
     }
 
     public void Confirm(){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Confirmar ruta");
@@ -143,6 +161,23 @@ public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCall
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sesion.ConfirmarRuta(true);
+                        try {
+                            coordJSON= Coord2Json(coordenada);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            jsonFinal = CrearJSON(coordJSON);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        jsonFinal= jsonFinal.replace("\\", "");
+                        jsonFinal = jsonFinal.replace("\"" + coordJSON + "\"", coordJSON);
+                        SendJSON json= new SendJSON(jsonFinal, sesion.obtenerToken());
+                        json.execute((Void) null);
                         ActivPasajero();
 
 
@@ -163,4 +198,25 @@ public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCall
         startActivity(ruta);
     }
 
+    public String Coord2Json(LatLng coord) throws JSONException {
+        JSONObject json= new JSONObject();
+        json.put("latitude", coord.latitude);
+        json.put("longitude", coord.longitude);
+        return "["+json.toString()+"]";
+    }
+
+    public String CrearJSON(String marker) throws JSONException {
+        JSONObject json = new JSONObject();
+        Boolean toUni = sesion.obtenerToUni();
+        String dtime = sesion.obtenerDateTime();
+        String role = "passenger";
+        json.put("datetime", dtime);
+        json.put("role", role);
+        json.put("to_uni", toUni);
+        json.put("markers", marker);
+
+        return json.toString();
+    }
+
 }
+

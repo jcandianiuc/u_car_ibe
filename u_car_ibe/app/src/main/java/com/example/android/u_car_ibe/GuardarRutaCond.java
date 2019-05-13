@@ -266,7 +266,6 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
     }
 
     public String Coord2Json(LatLng[] coord) throws JSONException {
-        //JSONObject json= new JSONObject();
         ArrayList<JSONObject> json = new ArrayList<JSONObject>();
 
         for (int i = 0; i < coord.length; i++) {
@@ -275,7 +274,6 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
             json2.put("longitude", coord[i].longitude);
             json.add(json2);
         }
-
 
         return json.toString();
     }
@@ -345,7 +343,9 @@ class SendJSON extends AsyncTask<Void, Void, Boolean>{
 
 
             is = httpConn.getInputStream(); //Se obtiene el resultado
+            //is= httpConn.getResponseMessage();
             result = convertStreamToString(is);//Se convierte a String*/
+            result= "popo";
         } catch (Exception e) {
             result = e.toString();
         }

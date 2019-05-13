@@ -111,8 +111,8 @@ ENDOFQUERY;
 
 		return self::handleResultSet(
 			Database::instance()->query($sql,compact("trip_id","user_id")),
-			$params['user_id'],
-			$params['trip_id']
+			$user_id,
+			$trip_id
 		);
 	}
 

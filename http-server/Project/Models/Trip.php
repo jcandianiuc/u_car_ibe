@@ -178,8 +178,8 @@ ENDOFQUERY;
 							# Guardamos los datos del nuevo usuario
 							$matching->driver_trip_id = $routedriver[0]->trip_id;
 							$matching->passenger_trip_id = $marker->trip_id;
-							$matching->driver_status = 0;
-							$matching->passenger_status = 0;
+							$matching->driver_status = 1;
+							$matching->passenger_status = 1;
 							# Insertar los datos en la BD
 							$matching->save();
 							#return exito
@@ -275,8 +275,8 @@ ENDOFQUERY;
 								# Guardamos los datos del nuevo usuario
 								$matching->driver_trip_id = $idroute->trip_id;
 								$matching->passenger_trip_id = $markerpassenger[0]->trip_id;
-								$matching->driver_status = 0;
-								$matching->passenger_status = 0;
+								$matching->driver_status = 1;
+								$matching->passenger_status = 1;
 								# Insertar los datos en la BD
 								$matching->save();
 								#return exito

@@ -227,11 +227,11 @@ ENDOFQUERY;
 								echo "yes";
 								# verificar el trip id de conductor esta cancelado con otro trip id de pasaje, o no este ese match
 								#Insertar el match encontrado 
-								echo $idroute;
+								echo $idroute->trip_id;
 								echo $markerpassenger[0]->trip_id;
 								$matching = new Match(); # Creamos un nuevo match
 								# Guardamos los datos del nuevo usuario
-								$matching->driver_trip_id = $idroute;
+								$matching->driver_trip_id = $idroute->trip_id;
 								$matching->passenger_trip_id = $markerpassenger[0]->trip_id;
 								$matching->driver_status = 0;
 								$matching->passenger_status = 0;

@@ -209,7 +209,7 @@ ENDOFQUERY;
 						echo $idroute->trip_id;
 						$sql	= "SELECT * FROM `marker` WHERE `trip_id`=:trip_id";
 
-						$routedriver	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => 36)));
+						$routedriver	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $idroute->trip_id)));
 
 
 						print_r ($routedriver);

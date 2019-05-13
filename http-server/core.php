@@ -58,7 +58,7 @@ class uCARibe
 	public function pathResolution():string
 	{
 		$base_uri		= empty($this->config['base-uri'])?"/":$this->config['base-uri'];
-		$complete_uri	= $_SERVER['REQUEST_URI'];
+		$complete_uri	= strtok($_SERVER['REQUEST_URI'],"?");
 		return substr($complete_uri,strlen($this->config['base-uri']));
 	}
 

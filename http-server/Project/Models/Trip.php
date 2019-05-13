@@ -5,6 +5,7 @@ namespace Project\Models;
 use DateTime;
 use Core\Database;
 use Core\DbModel;
+use Core\HttpException\BadRequestException;
 use Project\Models\Match;
 
 class Trip extends DbModel

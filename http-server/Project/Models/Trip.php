@@ -191,8 +191,8 @@ ENDOFQUERY;
 			$markerpassenger	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
 
-			print_r ($markerpassenger);
-			print_r ("=========");
+			#print_r ($markerpassenger);
+			#print_r ("=========");
 			if (empty($markerpassenger))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
@@ -212,7 +212,7 @@ ENDOFQUERY;
 
 					foreach($tripidroute as $idroute){
 						#Consulta obtener las rutas de los conductores 
-						echo $idroute->trip_id;
+						#echo $idroute->trip_id;
 						$sql	= "SELECT * FROM `marker` WHERE `trip_id`=:trip_id";
 
 						$routedriver	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $idroute->trip_id)));
@@ -227,8 +227,6 @@ ENDOFQUERY;
 								echo "yes";
 								# verificar el trip id de conductor esta cancelado con otro trip id de pasaje, o no este ese match
 								#Insertar el match encontrado 
-								echo $idroute->trip_id;
-								echo $markerpassenger[0]->trip_id;
 								$matching = new Match(); # Creamos un nuevo match
 								# Guardamos los datos del nuevo usuario
 								$matching->driver_trip_id = $idroute->trip_id;

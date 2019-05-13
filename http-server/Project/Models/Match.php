@@ -27,7 +27,7 @@ class Match extends DbModel
 		// no se necesita hacer nada ya que los ids se especificaron manualmente
 	}
 
-	static public function existanceTest(DbModel $match)
+	static public function existanceTest(DbModel $match):bool
 	{
 		return ($match instanceof Match)&&!empty(Match::queryAllMatchingParams([
 			"driver_trip_id"	=> $match->driver_trip_id,
@@ -80,10 +80,5 @@ class Match extends DbModel
 				$errors[]	= ['code'=>"invalid-status",'message'=>self::MSG_ERR_INVALID_STATUS,'data'=>$fieldName];
 
 		return $errors;
-	}
-
-	public function save()
-	{
-		parent::save();
 	}
 }

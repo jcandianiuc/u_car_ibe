@@ -184,8 +184,8 @@ ENDOFQUERY;
 			$markerpassenger	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':trip_id' => $this->id, ':role' => $role)));
 
 
-			print_r ($markerpassenger);
-			print_r ("=========");
+			#print_r ($markerpassenger);
+			#print_r ("=========");
 			if (empty($markerpassenger))
 				throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 			else {
@@ -197,8 +197,8 @@ ENDOFQUERY;
 				$tripidroute	= array_map(["Project\Models\Marker","normalization"],Database::instance()->query($sql,array(':role' => $role, ':datetime1' => $this->datetime, ':to_uni' => $this->to_uni)));
 
 
-				print_r ($tripidroute);
-				print_r ("=========");
+				#print_r ($tripidroute);
+				#print_r ("=========");
 				if (empty($tripidroute))
 					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 				else {
@@ -207,6 +207,7 @@ ENDOFQUERY;
 						#Consulta obtener las rutas de los conductores 
 						#echo $this->testMatch($marker, $routedriver ,200)?"yes":"no";
 						echo $idroute->trip_id;
+						
 
 					}
 				}

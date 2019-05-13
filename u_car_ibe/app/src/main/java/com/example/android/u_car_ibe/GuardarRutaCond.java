@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -35,10 +36,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+//import org.json.simple.parser.JSONParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,6 +54,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -343,8 +348,10 @@ class SendJSON extends AsyncTask<Void, Void, Boolean>{
 
 
             is = httpConn.getInputStream(); //Se obtiene el resultado
-            //is= httpConn.getResponseMessage();
             result = convertStreamToString(is);//Se convierte a String*/
+
+            JSONObject jsonObject = new JSONObject(result);
+            
             result= "popo";
         } catch (Exception e) {
             result = e.toString();
@@ -370,6 +377,13 @@ class SendJSON extends AsyncTask<Void, Void, Boolean>{
             return "";
         }
     }
+}
+
+class trip{
+        int id;
+        String status;
+        String markers;
+
 }
 
 

@@ -86,7 +86,7 @@ class uCARibe
 			$e->send();
 		} catch (Exception $e) {
 			error_log($e->getMessage());
-			(new ServerErrorException("error",$e->getMessage()))->send();
+			(new ServerErrorException("error",$e->getMessage(),$e->getTrace()))->send();
 		}
 	}
 }

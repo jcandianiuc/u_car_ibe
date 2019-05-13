@@ -205,7 +205,6 @@ ENDOFQUERY;
 
 					foreach($tripidroute as $idroute){
 						#Consulta obtener las rutas de los conductores 
-						#echo $this->testMatch($marker, $routedriver ,200)?"yes":"no";
 						echo $idroute->trip_id;
 						$sql	= "SELECT * FROM `marker` WHERE `trip_id`=:trip_id";
 
@@ -217,7 +216,9 @@ ENDOFQUERY;
 						if (empty($routedriver))
 							throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 						else{
-							
+							#echo $this->testMatch($marker, $routedriver ,200)?"yes":"no";
+							echo $markerpassenger->latitude;
+							return null;
 						}
 
 

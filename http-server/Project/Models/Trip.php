@@ -153,6 +153,7 @@ class Trip extends DbModel
 										OR	(`proposed`.`driver_status`!=2 AND `proposed`.`passenger_status`!=2)
 								)
 								AND ABS(TIMESTAMPDIFF(MINUTE,`proposal`.`datetime`,:datetime))<=30
+								AND ( (SELECT COUNT(*) FROM `match` WHERE `match`.`driver_trip_id`=`proposal`.`id` AND `match`.`passenger_trip_id`!=:trip_id)=0)
 ENDOFQUERY;
 				//"SELECT * FROM `marker` INNER JOIN `trip` ON `trip`.`role`=:role AND `trip`.`datetime`=:datetime1 AND `marker`.`trip_id` =  `trip`.`id` AND `trip`.`to_uni`=:to_uni";
 				$markerpassenger	= array_map(

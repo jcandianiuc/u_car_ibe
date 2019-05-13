@@ -16,7 +16,7 @@ use Project\Models\Proposal;
 class TripController extends Controller
 {
 	const	MSG_ERR_INVALID_FORM			= "Hay errores en la petición.";
-	const	MSG_ERR_PREVIOUSLY_REJECTED		= "La propuesta especificada fué rechazada por algún participante."
+	const	MSG_ERR_PREVIOUSLY_REJECTED		= "La propuesta especificada fué rechazada por algún participante.";
 	const	MSG_ERR_TRIP_PROPOSAL_NOT_FOUND	= "La propuesta o viaje especificado no existe.";
 	const	MSG_ERR_WRONG_AUTH				= "La información de autenticación es incorrecta.";
 	const	MSG_ERR_WRONG_CTYPE				= "El contenido de la petición debe ser tipo 'application/json'.";

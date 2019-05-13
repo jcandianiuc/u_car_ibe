@@ -17,8 +17,8 @@ class Match extends DbModel
 	const	MSG_ERR_FIELD_REQUIRED	= "Este campo es requisito.";
 	const	MSG_ERR_INVALID_STATUS	= "Valor inválido";
 
-	protected	$driver_trip_id;
-	protected	$passenger_trip_id;
+	public		$driver_trip_id;
+	public		$passenger_trip_id;
 	protected	$driver_status;
 	protected	$passenger_status;
 

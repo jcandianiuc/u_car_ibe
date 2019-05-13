@@ -168,7 +168,10 @@ ENDOFQUERY;
 					throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 				else {
 					foreach($markerpassenger as $marker){
-						echo $this->testMatch($marker, $routedriver ,200)?"yes":"no";
+						if ($this->testMatch($marker, $routedriver ,200)) {
+								echo "yes";
+								return null;
+							}
 
 					}
 
@@ -216,8 +219,11 @@ ENDOFQUERY;
 						if (empty($routedriver))
 							throw new BadRequestException("wrong-credentials",self::MSG_ERR_INVALID_MARKER);
 						else{
-							echo $this->testMatch($markerpassenger[0], $routedriver ,200)?"yes":"no";
-							return null;
+							if ($this->testMatch($markerpassenger[0], $routedriver ,200)) {
+								echo "yes";
+								return null;
+							}
+
 						}
 
 

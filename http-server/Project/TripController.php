@@ -20,7 +20,7 @@ class TripController extends Controller
 
 	static public function jsonRequestTest(Request $request)
 	{
-		return !empty($request->headers["Content-Type"])&&$request->headers["Content-Type"]=="application/json";
+		return $request->method!="POST"||(!empty($request->headers["Content-Type"])&&$request->headers["Content-Type"]=="application/json");
 	}
 
 	/*	Esta función precede a todas las peticiones que se manejan con este controller,

@@ -77,7 +77,15 @@ public class Sesiones {
         return sesion.getBoolean("toUni", true);
     }
 
+    public void guardarTrip(String tripId){
+        sesion.edit().putString("tripId", tripId).apply();
+    }
+
+    public String obtenerTripId(){
+        return sesion.getString("tripId", "");
+    }
+
     public boolean obtenerVerificacionCon(){
         return sesion.getBoolean("conexion", false);
     }
-}
+    }

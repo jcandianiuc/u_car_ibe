@@ -24,7 +24,7 @@
         android:src="@drawable/logo"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent"
-         />
+        />
 
     <TextView
         android:id="@+id/textView"
@@ -35,27 +35,23 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         app:layout_constraintTop_toBottomOf="@+id/imageView4"
-        app:layout_constraintLeft_toLeftOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
     <RadioGroup
         android:layout_width="357dp"
         android:layout_height="170dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="292dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@id/tvDate"
-        app:layout_constraintTop_toTopOf="@id/textView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        >
 
         <RadioButton
             android:id="@+id/conductor"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="350dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="10dp"
-            android:background="@android:color/holo_red_dark"
+            android:layout_marginLeft="20dp"
             android:button="@drawable/image_white_box"
             android:checked="false"
             android:text="Conductor"
@@ -63,17 +59,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintVertical_bias="0.465" />
+            app:layout_constraintVertical_bias="0.465"
+            android:background="@drawable/btn_shape_round"
+            />
 
         <RadioButton
             android:id="@+id/pasajero"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="350dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
-            android:background="@android:color/holo_red_dark"
+
+            android:background="@drawable/btn_shape_round"
             android:button="@drawable/image_white_box"
             android:checked="false"
             android:text="Pasajero"
@@ -85,34 +83,49 @@
     </RadioGroup>
 
 
-
-
-    <Button
-        android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginBottom="320dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="Fecha"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/Time"/>
+        android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/Time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="130dp"
-        android:layout_marginBottom="210dp"
-        android:text="Hora"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginTop="400dp"
+            android:layout_marginLeft="50dp">
+
+
+            <Button
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fecha"
+                android:textSize="25dp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginTop="400dp"
+
+            >
+
+            <Button
+                android:id="@+id/Time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Hora"
+                android:textSize="25dp"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
 
 
     <RadioGroup
@@ -153,7 +166,7 @@
         android:text="@string/btn_seleccion"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="50dp"
-         />
+        />
 
     <TextView
         android:id="@+id/tvRespuesta"
@@ -162,6 +175,6 @@
         android:text="Seleccion"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="30dp"
-         />
+        />
 
 </android.support.constraint.ConstraintLayout>

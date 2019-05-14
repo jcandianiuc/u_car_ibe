@@ -350,7 +350,7 @@ public class Registro extends AppCompatActivity implements LoaderCallbacks<Curso
             String result;
             InputStream is;
             try {
-                URL url = new URL("http://187.153.22.193/registration");
+                URL url = new URL("http://187.153.58.129/registration");
                 HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();//Se realiza la conexión
 
 

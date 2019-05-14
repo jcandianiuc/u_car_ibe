@@ -37,7 +37,8 @@
         <activity android:name=".Conductor" />
         <activity android:name=".GuardarRutaCond" />
         <activity android:name=".Pasajero" />
-        <activity android:name=".GuardarCoordPass"></activity>
+        <activity android:name=".GuardarCoordPass" />
+        <activity android:name=".Espera"></activity>
     </application>
 
 </manifest>

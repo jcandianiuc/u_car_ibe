@@ -176,9 +176,11 @@ public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCall
 
                         jsonFinal= jsonFinal.replace("\\", "");
                         jsonFinal = jsonFinal.replace("\"" + coordJSON + "\"", coordJSON);
-                        SendJSON json= new SendJSON(jsonFinal, sesion.obtenerToken());
+                        SendJSON json= new SendJSON(jsonFinal, sesion.obtenerToken(), sesion);
                         json.execute((Void) null);
-                        ActivPasajero();
+
+                        //ActivPasajero();
+                        //sesion.guardarTrip(json.getTrip());
 
 
                     }
@@ -194,7 +196,7 @@ public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCall
     }
 
     public void ActivPasajero(){
-        Intent ruta= new Intent(this, Pasajero.class);
+        Intent ruta= new Intent(this, Espera.class);
         startActivity(ruta);
     }
 
@@ -216,6 +218,107 @@ public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCall
         json.put("markers", marker);
 
         return json.toString();
+    }
+
+    class SendJSON extends AsyncTask<Void, Void, Boolean> {
+        private String jsonString;
+        private String token;
+        String tripID;
+        Sesiones sesion;
+
+
+        SendJSON(String json, String tkn, Sesiones sesion1) {
+            jsonString = json;
+            token = tkn;
+            sesion = sesion1;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        protected Boolean doInBackground(Void... voids) {
+            try {
+
+                Send(jsonString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Boolean success) {
+            ActivPasajero();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        public void Send(String json) throws IOException {
+            InputStream is;
+            String result;
+
+
+            try {
+                URL url = new URL("http://187.153.58.129/trip/start");
+                HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();//Se realiza la conexión
+
+                httpConn.setRequestMethod("POST");
+                httpConn.setRequestProperty("Content-Type", "application/json");
+                httpConn.setRequestProperty("Accept", "application/json");
+                String tokenPrueba = "Token " + token;
+                tokenPrueba = tokenPrueba.replace("\"", "");
+                httpConn.setRequestProperty("Authorization", tokenPrueba);
+                httpConn.setDoOutput(true);
+
+                //String input= "{\"id\":\"" + mUsername +"\"," + "\"password\":\"" + mPassword + "\"}";
+
+                httpConn.connect();
+                try (OutputStream os = httpConn.getOutputStream()) {
+                    byte[] query = json.getBytes("utf-8");
+                    os.write(query, 0, query.length);
+                }
+                int code = httpConn.getResponseCode();
+                int algo = 0;
+
+
+                is = httpConn.getInputStream(); //Se obtiene el resultado
+                result = convertStreamToString(is);//Se convierte a String*/
+
+                JSONObject jsonObject = new JSONObject(result);
+                tripID = jsonObject.getString("trip_id");
+            /*String proposal= jsonObject.getString("proposal");
+
+            if (proposal != "null"){
+                //JSONObject = jsonObject.getJSONObject("proposal");
+            }*/
+                result = "popo";
+                sesion.guardarTrip(tripID);
+            } catch (Exception e) {
+                result = e.toString();
+            }
+        }
+
+    /*public String getTrip(){
+
+        return tripID;
+    }*/
+
+        private String convertStreamToString(InputStream is) throws IOException { //Para convertir a String
+            if (is != null) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                try {
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(is, "UTF-8"));
+                    while ((line = reader.readLine()) != null) {
+                        //sb.append(line).append("");
+                        sb.append(line);
+                    }
+                } finally {
+                    is.close();
+                }
+                return sb.toString();
+            } else {
+                return "";
+            }
+        }
+
     }
 
 }

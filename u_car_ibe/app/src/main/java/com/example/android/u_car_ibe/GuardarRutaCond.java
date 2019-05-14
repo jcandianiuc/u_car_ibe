@@ -235,15 +235,15 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
                         try {
                             marcadores = Coord2Json(coord);
                             prueba = CrearJSON(marcadores);
-                            prueba= prueba.replace("\\", "");
-                            prueba=prueba.replace("\"" + marcadores + "\"", marcadores);
+                            prueba = prueba.replace("\\", "");
+                            prueba = prueba.replace("\"" + marcadores + "\"", marcadores);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        SendJSON json = new SendJSON(prueba, sesion.obtenerToken());
+                        SendJSON json = new SendJSON(prueba, sesion.obtenerToken(), sesion);
 
                         json.execute((Void) null);
-                        ActivConductor();
+
 
 
                     }
@@ -259,7 +259,7 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
     }
 
     public void ActivConductor() {
-        Intent ruta = new Intent(this, Conductor.class);
+        Intent ruta = new Intent(this, Espera.class);
         startActivity(ruta);
     }
 
@@ -288,7 +288,7 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
         Boolean toUni = sesion.obtenerToUni();
         String dtime = sesion.obtenerDateTime();
         String role = "driver";
-        String prueba= markers;
+        String prueba = markers;
         json.put("datetime", dtime);
         json.put("role", role);
         json.put("to_uni", toUni);
@@ -297,93 +297,107 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
         return json.toString();
     }
 
-}
-class SendJSON extends AsyncTask<Void, Void, Boolean>{
-    private String jsonString;
-    private String token;
+
+    class SendJSON extends AsyncTask<Void, Void, Boolean> {
+        private String jsonString;
+        private String token;
+        String tripID;
+        Sesiones sesion;
 
 
-    SendJSON(String json, String tkn){
-        jsonString= json;
-        token= tkn;
-    }
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    protected Boolean doInBackground(Void... voids) {
-        try {
-
-            Send(jsonString);
-        } catch (IOException e) {
-            e.printStackTrace();
+        SendJSON(String json, String tkn, Sesiones sesion1) {
+            jsonString = json;
+            token = tkn;
+            sesion = sesion1;
         }
-        return null;
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void Send(String json) throws IOException {
-        InputStream is;
-        String result;
-
-
-        try {
-            URL url = new URL("http://187.153.22.193/trip/start");
-            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();//Se realiza la conexión
-
-            httpConn.setRequestMethod("POST");
-            httpConn.setRequestProperty("Content-Type", "application/json");
-            httpConn.setRequestProperty("Accept", "application/json");
-            String tokenPrueba= "Token " + token;
-            tokenPrueba= tokenPrueba.replace("\"", "");
-            httpConn.setRequestProperty("Authorization", tokenPrueba);
-            httpConn.setDoOutput(true);
-
-            //String input= "{\"id\":\"" + mUsername +"\"," + "\"password\":\"" + mPassword + "\"}";
-
-            httpConn.connect();
-            try (OutputStream os = httpConn.getOutputStream()) {
-                byte[] query = json.getBytes("utf-8");
-                os.write(query, 0, query.length);
-            }
-            int code= httpConn.getResponseCode();
-            int algo= 0;
-
-
-            is = httpConn.getInputStream(); //Se obtiene el resultado
-            result = convertStreamToString(is);//Se convierte a String*/
-
-            JSONObject jsonObject = new JSONObject(result);
-            
-            result= "popo";
-        } catch (Exception e) {
-            result = e.toString();
-        }
-    }
-
-    private String convertStreamToString(InputStream is) throws IOException { //Para convertir a String
-        if (is != null) {
-            StringBuilder sb = new StringBuilder();
-            String line;
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        protected Boolean doInBackground(Void... voids) {
             try {
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(is, "UTF-8"));
-                while ((line = reader.readLine()) != null) {
-                    //sb.append(line).append("");
-                    sb.append(line);
-                }
-            } finally {
-                is.close();
+
+                Send(jsonString);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            return sb.toString();
-        } else {
-            return "";
+            return null;
         }
+
+        protected void onPostExecute(Boolean success) {
+            ActivConductor();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        public void Send(String json) throws IOException {
+            InputStream is;
+            String result;
+
+
+            try {
+                URL url = new URL("http://187.153.58.129/trip/start");
+                HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();//Se realiza la conexión
+
+                httpConn.setRequestMethod("POST");
+                httpConn.setRequestProperty("Content-Type", "application/json");
+                httpConn.setRequestProperty("Accept", "application/json");
+                String tokenPrueba = "Token " + token;
+                tokenPrueba = tokenPrueba.replace("\"", "");
+                httpConn.setRequestProperty("Authorization", tokenPrueba);
+                httpConn.setDoOutput(true);
+
+                //String input= "{\"id\":\"" + mUsername +"\"," + "\"password\":\"" + mPassword + "\"}";
+
+                httpConn.connect();
+                try (OutputStream os = httpConn.getOutputStream()) {
+                    byte[] query = json.getBytes("utf-8");
+                    os.write(query, 0, query.length);
+                }
+                int code = httpConn.getResponseCode();
+                int algo = 0;
+
+
+                is = httpConn.getInputStream(); //Se obtiene el resultado
+                result = convertStreamToString(is);//Se convierte a String*/
+
+                JSONObject jsonObject = new JSONObject(result);
+                tripID = jsonObject.getString("trip_id");
+            /*String proposal= jsonObject.getString("proposal");
+
+            if (proposal != "null"){
+                //JSONObject = jsonObject.getJSONObject("proposal");
+            }*/
+                result = "popo";
+                sesion.guardarTrip(tripID);
+            } catch (Exception e) {
+                result = e.toString();
+            }
+        }
+
+    /*public String getTrip(){
+
+        return tripID;
+    }*/
+
+        private String convertStreamToString(InputStream is) throws IOException { //Para convertir a String
+            if (is != null) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                try {
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(is, "UTF-8"));
+                    while ((line = reader.readLine()) != null) {
+                        //sb.append(line).append("");
+                        sb.append(line);
+                    }
+                } finally {
+                    is.close();
+                }
+                return sb.toString();
+            } else {
+                return "";
+            }
+        }
+
     }
-}
-
-class trip{
-        int id;
-        String status;
-        String markers;
-
 }
 
 

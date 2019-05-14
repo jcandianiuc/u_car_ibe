@@ -14,6 +14,8 @@ public class Pasajero extends AppCompatActivity {
         setContentView(R.layout.activity_pasajero);
         sesion = new Sesiones(this);
         sesion.verificarConn(false);
+        String trip= sesion.obtenerTripId();
+        trip= "hsdghjs";
 
         //Revisar si tiene coordenada guardada
 

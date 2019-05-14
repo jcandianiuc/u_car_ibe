@@ -318,7 +318,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 try {
                     // Simulate network access.
                     //Hago la conexión
-                    URL url = new URL("http://187.153.22.193/login");
+                    URL url = new URL("http://187.153.58.129/login");
                     HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();//Se realiza la conexión
 
                     httpConn.setRequestMethod("POST");

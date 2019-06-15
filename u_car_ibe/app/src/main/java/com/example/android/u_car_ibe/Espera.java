@@ -6,6 +6,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -20,13 +21,35 @@ public class Espera extends AppCompatActivity {
     private Sesiones sesion;
     private String trip;
     private android.widget.TextView texto;
-
-
+    String propOb;
+    JSONObject proposal;
+    String datos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_espera);
+
+        propOb = getIntent().getExtras().getString("proposal");
+
+        try {
+            proposal= new JSONObject(propOb);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            proposal= proposal.getJSONObject("contact");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            datos= proposal.getString("name") +"\n" + proposal.getString("email") + "\n" + proposal.getString("phone");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         texto = (android.widget.TextView) findViewById(R.id.mensaje);
         sesion = new Sesiones(this);
         sesion.verificarConn(false);
@@ -35,14 +58,12 @@ public class Espera extends AppCompatActivity {
         String token= sesion.obtenerToken();
         SendJSON send= new SendJSON(trip, token);
         send.execute((Void) null);
+
     }
 
     public void cambiarMensaje(android.view.View v){
         java.text.SimpleDateFormat formato = new java.text.SimpleDateFormat("HH:mm:ss");
-        java.util.Date fechaActual = java.util.Calendar.getInstance().getTime();
-
-        String s = formato.format(fechaActual);
-        texto.setText(String.format("Botón presionado: %s", s));
+        texto.setText(String.format("Encotnramos MATCH comunicate con el: "+ datos, propOb));
     }
 
 

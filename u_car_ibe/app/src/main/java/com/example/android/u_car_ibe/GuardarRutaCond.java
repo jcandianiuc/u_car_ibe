@@ -70,6 +70,7 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
     private ArrayList<LatLng> arrayCoord = new ArrayList<LatLng>();
     String prueba;
     String marcadores;
+    String prop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,7 +261,9 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
 
     public void ActivConductor() {
         Intent ruta = new Intent(this, Espera.class);
-        startActivity(ruta);
+        Intent intent = new Intent(GuardarRutaCond.this, Espera.class);
+        intent.putExtra("proposal",prop);
+        startActivity(intent);
     }
 
     public void onBackPressed() {
@@ -360,6 +363,7 @@ public class GuardarRutaCond extends FragmentActivity implements OnMapReadyCallb
 
                 JSONObject jsonObject = new JSONObject(result);
                 tripID = jsonObject.getString("trip_id");
+                prop = jsonObject.getJSONObject("proposal").toString();
             /*String proposal= jsonObject.getString("proposal");
 
             if (proposal != "null"){

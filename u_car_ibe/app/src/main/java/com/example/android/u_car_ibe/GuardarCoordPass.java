@@ -1,6 +1,7 @@
 package com.example.android.u_car_ibe;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -54,6 +55,7 @@ public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCall
     LatLng coordenada;
     String coordJSON;
     String jsonFinal;
+    String prop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,7 +199,10 @@ public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCall
 
     public void ActivPasajero(){
         Intent ruta= new Intent(this, Espera.class);
-        startActivity(ruta);
+
+        Intent intent = new Intent(GuardarCoordPass.this, Espera.class);
+        intent.putExtra("proposal",prop);
+        startActivity(intent);
     }
 
     public String Coord2Json(LatLng coord) throws JSONException {
@@ -282,6 +287,8 @@ public class GuardarCoordPass extends FragmentActivity implements OnMapReadyCall
 
                 JSONObject jsonObject = new JSONObject(result);
                 tripID = jsonObject.getString("trip_id");
+                prop = jsonObject.getJSONObject("proposal").toString();
+
             /*String proposal= jsonObject.getString("proposal");
 
             if (proposal != "null"){
